@@ -1,0 +1,26 @@
+{
+  "name": "Manejo Clima Ponedora Legal",
+  "short_name": "ClimaPonedora",
+  "description": "Calculadora profesional de manejo de clima para gallinas ponedoras. Control de temperatura, humedad, ventilacion y densidad para avicultores.",
+  "start_url": "/manejo-clima-ponedora-legal/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2E7D32",
+  "orientation": "portrait",
+  "scope": "/manejo-clima-ponedora-legal/",
+  "lang": "es-CL",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
