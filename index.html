@@ -179,6 +179,12 @@ setLang(saved);
 </div></body></html>
 </div>
 </section>
-
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js');
+  });
+}
+</script>
 </body>
 </html>
