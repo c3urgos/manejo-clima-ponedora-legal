@@ -1,14 +1,28 @@
 {
-  "name": "Manejo Clima Ponedora",
+  "name": "Manejo Clima Ponedora Legal",
   "short_name": "ManejoClima",
-  "description": "Manejo clima ponedoras 7 dias - ISA Brown con carbonato de calcio agricola CaCO3 - Rio Bueno Chile",
-  "start_url": ".",
+  "description": "Manejo clima ponedoras 7 dias - ISA Brown con carbonato de calcio agricola CaCO3 - Rio Bueno Chile - tabla 7 dias",
+  "start_url": "/manejo-clima-ponedora-legal/",
+  "scope": "/manejo-clima-ponedora-legal/",
   "display": "standalone",
   "background_color": "#2F6F31",
   "theme_color": "#2F6F31",
   "id": "com.manejoclimaponedora.legal",
+  "lang": "es",
+  "orientation": "any",
+  "dir": "ltr",
   "icons": [
-    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
