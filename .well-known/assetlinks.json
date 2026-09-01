@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.manejoclimaponedora.legal.app",
+        "sha256_cert_fingerprints": ["77:02:60:38:10:D4:38:17:67:54:3C:D6:EA:3B:2D:EA:3B:36:57:9D:AD:9C:EB:95:14:B6:3E:E9:10:B8:9E:64"]
+      }
+    }]
