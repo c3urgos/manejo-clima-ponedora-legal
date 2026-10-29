@@ -9,57 +9,53 @@
   <style>
 </style>
   <style>
-/* FIX BASE - quita recorte */
+/* FIX BASE - quita recorte amarillo */
 div[class*="fefae0"] {
   height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
   overflow: visible !important;
 }
+
 @media screen and (max-width: 768px) {
+  /* Caja amarilla completa */
   div[class*="fefae0"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
     padding: 16px !important;
+    align-items: stretch !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  /* Contenedor interno que tenia scroll horizontal */
+  div[class*="fefae0"] > div {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    height: auto !important;
+    overflow: visible !important;
+    align-items: stretch !important;
+  }
+  /* TITULO - centrado */
+  div[class*="fefae0"] > div > *:first-child {
+    align-self: center !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    width: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  /* LOS 4 PASOS - izquierda */
+  div[class*="fefae0"] > div > *:not(:first-child) {
+    align-self: flex-start !important;
+    text-align: left !important;
+    width: 100% !important;
+    justify-content: flex-start !important;
   }
 }
 </style>
-<script>
-// Fuerza: titulo centrado arriba + 4 pasos izquierda abajo
-(function() {
-  function aplicar() {
-    if (window.innerWidth > 768) return;
-    document.querySelectorAll('div[class*="fefae0"]').forEach(function(amarillo){
-      var interno = amarillo.querySelector('div.flex, div[class*="flex"]') || amarillo.firstElementChild;
-      if (!interno || interno.dataset.fixed === "1") return;
-      
-      interno.style.setProperty('display','flex','important');
-      interno.style.setProperty('flex-direction','column','important');
-      interno.style.setProperty('gap','12px','important');
-      interno.style.setProperty('height','auto','important');
-      interno.style.setProperty('overflow','visible','important');
-      interno.style.setProperty('align-items','stretch','important');
-
-      Array.from(interno.children).forEach(function(h){
-        if (h.textContent.includes('COMO USAR - 4 PASOS')) {
-          h.style.setProperty('align-self','center','important');
-          h.style.setProperty('text-align','center','important');
-          h.style.setProperty('margin','0 auto','important');
-          h.style.setProperty('width','auto','important');
-          h.style.setProperty('justify-content','center','important');
-        } else {
-          h.style.setProperty('align-self','flex-start','important');
-          h.style.setProperty('text-align','left','important');
-          h.style.setProperty('width','100%','important');
-        }
-      });
-      interno.dataset.fixed = "1";
-      setTimeout(function(){ interno.dataset.fixed = ""; }, 2000);
-    });
-  }
-  window.addEventListener('load', aplicar);
-  window.addEventListener('resize', aplicar);
-  setInterval(aplicar, 1200);
-  new MutationObserver(aplicar).observe(document.body, {childList:true, subtree:true});
-})();
-</script>
-</head>
+ </head>
 <body>
   <div id="root"></div>
   
