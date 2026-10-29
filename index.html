@@ -54,6 +54,26 @@ div[class*="fefae0"] {
     justify-content: flex-start !important;
   }
 }
+    /* Corrección final: titulo centrado, pasos izquierda */
+@media screen and (max-width: 768px) {
+  div[class*="fefae0"] > div > div:first-child,
+  div[class*="fefae0"] > div > span:first-child,
+  div[class*="fefae0"] > div > *:first-child {
+    align-self: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+    width: auto !important;
+  }
+  div[class*="fefae0"] > div > div:nth-child(2),
+  div[class*="fefae0"] > div > *:nth-child(2) {
+    align-self: flex-start !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    text-align: left !important;
+    width: 100% !important;
+  }
+}
 </style>
  </head>
 <body>
