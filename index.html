@@ -9,75 +9,57 @@
   <style>
 </style>
   <style>
-/* FIX DEFINITIVO COMO USAR - Titulo centrado + 4 pasos izquierda */
+/* FIX BASE - quita recorte */
+div[class*="fefae0"] {
+  height: auto !important;
+  overflow: visible !important;
+}
 @media screen and (max-width: 768px) {
-  .como-usar-fix {
-    display: flex !important;
-    flex-direction: column !important;
-    height: auto !important;
-    min-height: auto !important;
-    overflow: visible !important;
-    gap: 12px !important;
-    align-items: stretch !important;
-  }
-  .como-usar-titulo {
-    align-self: center !important;
-    text-align: center !important;
-    margin: 0 auto !important;
-    display: flex !important;
-    justify-content: center !important;
-  }
-  .como-usar-pasos {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100% !important;
-    align-items: flex-start !important;
-    gap: 10px !important;
-  }
-  .como-usar-pasos > * {
-    width: 100% !important;
-    justify-content: flex-start !important;
-    text-align: left !important;
+  div[class*="fefae0"] {
+    padding: 16px !important;
   }
 }
 </style>
 <script>
-// Observa el DOM y fuerza el apilado aunque React redibuje
+// Fuerza: titulo centrado arriba + 4 pasos izquierda abajo
 (function() {
-  function forzarApilado() {
+  function aplicar() {
     if (window.innerWidth > 768) return;
-    document.querySelectorAll('div').forEach(function(d){
-      if (d.textContent.trim().startsWith('COMO USAR - 4 PASOS')) {
-        // Contenedor amarillo
-        var amarillo = d.closest('div[class*="fefae0"]') || d.parentElement.parentElement;
-        if (amarillo) {
-          amarillo.classList.add('como-usar-fix');
-          d.classList.add('como-usar-titulo');
-          // El wrapper de los 4 pasos (el que tiene el scroll)
-          var wrapper = amarillo.querySelector('div.flex, div[class*="flex"]');
-          if (wrapper) {
-            wrapper.classList.add('como-usar-pasos');
-          }
-          // También todos los divs internos con los pasos
-          var hijos = amarillo.querySelectorAll('div');
-          hijos.forEach(function(h){
-            if (h.textContent.includes('Elige tu raza') || h.textContent.includes('Localiza donde')) {
-              h.closest('div')?.classList.add('como-usar-pasos');
-            }
-          });
+    document.querySelectorAll('div[class*="fefae0"]').forEach(function(amarillo){
+      var interno = amarillo.querySelector('div.flex, div[class*="flex"]') || amarillo.firstElementChild;
+      if (!interno || interno.dataset.fixed === "1") return;
+      
+      interno.style.setProperty('display','flex','important');
+      interno.style.setProperty('flex-direction','column','important');
+      interno.style.setProperty('gap','12px','important');
+      interno.style.setProperty('height','auto','important');
+      interno.style.setProperty('overflow','visible','important');
+      interno.style.setProperty('align-items','stretch','important');
+
+      Array.from(interno.children).forEach(function(h){
+        if (h.textContent.includes('COMO USAR - 4 PASOS')) {
+          h.style.setProperty('align-self','center','important');
+          h.style.setProperty('text-align','center','important');
+          h.style.setProperty('margin','0 auto','important');
+          h.style.setProperty('width','auto','important');
+          h.style.setProperty('justify-content','center','important');
+        } else {
+          h.style.setProperty('align-self','flex-start','important');
+          h.style.setProperty('text-align','left','important');
+          h.style.setProperty('width','100%','important');
         }
-      }
+      });
+      interno.dataset.fixed = "1";
+      setTimeout(function(){ interno.dataset.fixed = ""; }, 2000);
     });
   }
-  var obs = new MutationObserver(forzarApilado);
-  obs.observe(document.body, {childList: true, subtree: true});
-  window.addEventListener('load', forzarApilado);
-  window.addEventListener('resize', forzarApilado);
-  setInterval(forzarApilado, 1000);
+  window.addEventListener('load', aplicar);
+  window.addEventListener('resize', aplicar);
+  setInterval(aplicar, 1200);
+  new MutationObserver(aplicar).observe(document.body, {childList:true, subtree:true});
 })();
 </script>
-</style>
-</<head>
+</head>
 <body>
   <div id="root"></div>
   
