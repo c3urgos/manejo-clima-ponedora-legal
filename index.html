@@ -83,21 +83,30 @@ if(localStorage.getItem('esPremium') === 'true'){
 }
 </script>
   <script>
-// FIX MOVIL - Pone ID automatico a la barra COMO USAR
-document.addEventListener('DOMContentLoaded', function() {
-  function ponerId() {
-    var divs = document.querySelectorAll('div');
-    for (var i=0; i<divs.length; i++) {
-      var d = divs[i];
-      if (d.textContent.includes('COMO USAR - 4 PASOS') && !d.id) {
-        d.id = 'barra-como-usar';
-        break;
+// FIX MOVIL DEFINITIVO - Apila COMO USAR vertical en móvil
+function fixComoUsar() {
+  if (window.innerWidth > 768) return;
+  var allDivs = document.querySelectorAll('div');
+  for (var i=0; i<allDivs.length; i++) {
+    var d = allDivs[i];
+    if (d.textContent.includes('COMO USAR - 4 PASOS') && d.className.includes('fefae0')) {
+      d.style.setProperty('display', 'flex', 'important');
+      d.style.setProperty('flex-direction', 'column', 'important');
+      d.style.setProperty('gap', '8px', 'important');
+      d.style.setProperty('height', 'auto', 'important');
+      d.style.setProperty('align-items', 'stretch', 'important');
+      var hijos = d.children;
+      for (var j=0; j<hijos.length; j++) {
+        hijos[j].style.setProperty('width', '100%', 'important');
       }
     }
   }
-  ponerId();
-  setTimeout(ponerId, 1500);
-});
+}
+window.addEventListener('load', fixComoUsar);
+window.addEventListener('resize', fixComoUsar);
+setTimeout(fixComoUsar, 500);
+setTimeout(fixComoUsar, 1500);
+setTimeout(fixComoUsar, 3000);
 </script>
 <!-- FIN MONETIZACION --> 
 </body>
