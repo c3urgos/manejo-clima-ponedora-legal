@@ -82,6 +82,23 @@ if(localStorage.getItem('esPremium') === 'true'){
   if(premSec) premSec.innerHTML = '<h3 style="color:#2E7D32;">✅ Usted es Premium</h3><p>Gracias por apoyar Manejo Clima Ponedora</p>';
 }
 </script>
+  <script>
+// FIX MOVIL - Pone ID automatico a la barra COMO USAR
+document.addEventListener('DOMContentLoaded', function() {
+  function ponerId() {
+    var divs = document.querySelectorAll('div');
+    for (var i=0; i<divs.length; i++) {
+      var d = divs[i];
+      if (d.textContent.includes('COMO USAR - 4 PASOS') && !d.id) {
+        d.id = 'barra-como-usar';
+        break;
+      }
+    }
+  }
+  ponerId();
+  setTimeout(ponerId, 1500);
+});
+</script>
 <!-- FIN MONETIZACION --> 
 </body>
 </html>
