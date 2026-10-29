@@ -9,52 +9,63 @@
  </head>
   ... tailwind ... -o-pinch-z;
 </style>
-<style>
-/* FIX LIMPIO - apila sin recorte */
+  <style>
+/* FIX DEFINITIVO TODO IZQUIERDA */
 div[class*="fefae0"] {
   height: auto !important;
   overflow: visible !important;
 }
 @media screen and (max-width: 768px) {
+  div[class*="fefae0"] {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 16px !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
   div[class*="fefae0"] > div {
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    width: 100% !important;
     height: auto !important;
     overflow: visible !important;
+  }
+  div[class*="fefae0"] > div > * {
+    align-self: flex-start !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+    margin-left: 0 !important;
+    width: 100% !important;
   }
 }
 </style>
 <script>
-// FIX DEFINITIVO por texto: titulo centrado + 4 pasos izquierda
+// Fuerza todo a la izquierda
 (function() {
-  function aplicar() {
+  function todoIzq() {
     if (window.innerWidth > 768) return;
     document.querySelectorAll('div').forEach(function(el){
       var t = el.textContent.trim();
-      if (t === 'COMO USAR - 4 PASOS') {
-        el.style.setProperty('align-self','center','important');
-        el.style.setProperty('margin','0 auto','important');
-        el.style.setProperty('text-align','center','important');
-        el.style.setProperty('width','100%','important');
-        el.style.setProperty('display','flex','important');
-        el.style.setProperty('justify-content','center','important');
-      }
-      if ((t.startsWith('1.- Elige tu raza') || t.startsWith('2.- Localiza') || t.startsWith('3.- Actualiza') || t.startsWith('4.- Revisa')) && t.length < 80) {
-        var pill = el.closest('div') || el;
-        pill.style.setProperty('align-self','flex-start','important');
-        pill.style.setProperty('margin-left','0','important');
-        pill.style.setProperty('width','100%','important');
-        pill.style.setProperty('text-align','left','important');
-        el.style.setProperty('text-align','left','important');
-        el.style.setProperty('justify-content','flex-start','important');
+      if (t === 'COMO USAR - 4 PASOS' || t.startsWith('1.- Elige tu raza') || t.startsWith('2.- Localiza') || t.startsWith('3.- Actualiza') || t.startsWith('4.- Revisa')) {
+        if (t.length < 90) {
+          el.style.setProperty('align-self','flex-start','important');
+          el.style.setProperty('text-align','left','important');
+          el.style.setProperty('margin-left','0','important');
+          el.style.setProperty('width','100%','important');
+          el.style.setProperty('justify-content','flex-start','important');
+        }
       }
     });
   }
-  window.addEventListener('load', aplicar);
-  window.addEventListener('resize', aplicar);
-  setInterval(aplicar, 900);
-  new MutationObserver(aplicar).observe(document.body, {childList:true, subtree:true});
+  window.addEventListener('load', todoIzq);
+  window.addEventListener('resize', todoIzq);
+  setInterval(todoIzq, 1000);
+  new MutationObserver(todoIzq).observe(document.body, {childList:true, subtree:true});
 })();
 </script>
 <body>
