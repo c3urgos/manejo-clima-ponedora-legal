@@ -68,6 +68,90 @@ div[class*="fefae0"] {
   new MutationObserver(todoIzq).observe(document.body, {childList:true, subtree:true});
 })();
 </script>
+  <style>
+/* FIX RAZA v323 - HYB + flecha + Elige aqui MISMA FILA movil - SOLO <768px */
+@media screen and (max-width: 768px) {
+  div[style*="dashed"] { overflow: visible !important; }
+}
+</style>
+<script>
+// FIX RAZA v323 - Deja HYB - Hy-Line Brown ▼ - flecha - Elige aqui en la misma fila en movil
+(function() {
+  function fixRazaFila() {
+    if (window.innerWidth > 768) return;
+
+    const selector = [...document.querySelectorAll('div, button, span')].find(e => 
+      e.textContent.includes('HYB - Hy-Line Brown') && e.textContent.includes('▼') && e.textContent.trim().length < 50
+    );
+    const elige = [...document.querySelectorAll('div, span, button')].find(e => e.textContent.trim() === 'Elige aqui!');
+
+    if (!selector || !elige) return;
+
+    // Buscar contenedor punteado que tiene todo
+    let outer = elige.parentElement;
+    for(let i=0; i<10 && outer; i++){
+      if(outer.textContent.includes('HYB - Hy-Line Brown') && outer.textContent.includes('Contamos con un catalogo de 170 razas')){
+        break;
+      }
+      outer = outer.parentElement;
+    }
+    if(!outer || outer.dataset.fixedV323 === '1') return;
+
+    const filaFlecha = elige.parentElement;
+    const flecha = filaFlecha ? filaFlecha.firstElementChild : null;
+    const catalogo = [...outer.querySelectorAll('div')].find(e => e.textContent.includes('Contamos con un catalogo de 170 razas'));
+
+    // Crear nueva fila: [ HYB ▼ ] [ ← ] [ Elige aqui! ]
+    const nuevaFila = document.createElement('div');
+    nuevaFila.style.display = 'flex';
+    nuevaFila.style.flexDirection = 'row';
+    nuevaFila.style.alignItems = 'center';
+    nuevaFila.style.gap = '8px';
+    nuevaFila.style.flexWrap = 'wrap';
+    nuevaFila.style.width = '100%';
+    nuevaFila.style.marginBottom = '12px';
+
+    // pill negro HYB
+    let pill = selector;
+    // intentar tomar el contenedor pill negro
+    if(pill.parentElement && pill.parentElement.textContent.includes('HYB - Hy-Line Brown')) {
+      // si el padre es el pill, usamos el pill
+      const possiblePill = [...document.querySelectorAll('div')].find(d => d.textContent.trim() === selector.textContent.trim() && window.getComputedStyle(d).backgroundColor.includes('rgb(0, 0, 0)') || d.textContent.includes('HYB - Hy-Line Brown ▼'));
+    }
+    // Mover elementos (clonamos para no perder eventos del selector original si es complejo, luego ocultamos original)
+    // Para asegurar que funcione, movemos los nodos reales
+    try {
+      const pillToMove = selector.closest('div') && selector.closest('div').textContent.includes('HYB - Hy-Line Brown') ? selector.closest('div') : selector;
+      if(pillToMove) nuevaFila.appendChild(pillToMove);
+    } catch(e){ nuevaFila.appendChild(selector); }
+
+    if(flecha) {
+      flecha.style.removeProperty('transform');
+      nuevaFila.appendChild(flecha);
+    }
+    elige.style.whiteSpace = 'nowrap';
+    nuevaFila.appendChild(elige);
+
+    outer.insertBefore(nuevaFila, outer.firstChild);
+
+    if(catalogo) {
+      catalogo.style.setProperty('width','100%','important');
+      catalogo.style.setProperty('max-width','100%','important');
+      catalogo.style.setProperty('margin-top','8px','important');
+    }
+
+    if(filaFlecha) filaFlecha.style.display = 'contents';
+
+    outer.dataset.fixedV323 = '1';
+  }
+
+  window.addEventListener('load', fixRazaFila);
+  window.addEventListener('resize', fixRazaFila);
+  setTimeout(fixRazaFila, 600);
+  setTimeout(fixRazaFila, 1500);
+  new MutationObserver(fixRazaFila).observe(document.body, {childList:true, subtree:true});
+})();
+</script>
 <body>
   <div id="root"></div>
   
