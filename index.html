@@ -69,55 +69,62 @@ div[class*="fefae0"] {
 })();
 </script>
   <style>
-/* FIX RAZA v326 FINAL - Caja negra 1.- Elige tu raza aqui + oculta verdes - TODOS */
+/* FIX RAZA v327 FINAL - Fuerza caja negra a 1.- Elige tu raza aqui - TODOS */
 </style>
 <script>
-// FIX RAZA v326 FINAL - Elimina flecha verde y Elige aqui verde, cambia caja negra
+// FIX RAZA v327 - Fuerza texto negro y mantiene verdes ocultas
 (function() {
-  function fixFinal() {
-    const all = [...document.querySelectorAll('div')];
-    
-    // 1. Cambiar caja negra ISA - ISA Brown ▼ -> 1.- Elige tu raza aquí. ▼
-    let pill = all.filter(d => {
-      const t = (d.textContent||'').trim();
-      return (t.startsWith('ISA -') || t.startsWith('HYB -')) && t.includes('▼') && t.length < 80;
-    }).sort((a,b)=>a.textContent.length-b.textContent.length)[0];
-    
-    if (pill && !pill.dataset.fixedV326) {
-      pill.textContent = '1.- Elige tu raza aquí. ▼';
-      pill.dataset.fixedV326 = '1';
-    }
-
-    // 2. Ocultar Elige aqui! verde y flecha ←
-    all.forEach(d => {
-      const t = (d.textContent||'').trim();
-      if (t === 'Elige aqui!' || t === 'Elige aquí!') {
-        d.style.setProperty('display','none','important');
-      }
-      if ((t === '←' || t === '→') && d.textContent.length <= 3) {
-        // no ocultar la pill negra nueva
-        if (!(d.textContent||'').includes('Elige tu raza')) {
-          d.style.setProperty('display','none','important');
-          // ocultar el circulo verde padre
-          if (d.parentElement && d.parentElement.children.length <= 2) {
-            d.parentElement.style.setProperty('display','none','important');
+  function forzarTextoNegro() {
+    // Buscar TODOS los elementos que dicen ISA - ... ▼ o HYB - ... ▼
+    const all = document.querySelectorAll('div, button, span');
+    all.forEach(el => {
+      const t = (el.textContent || '').trim();
+      // Es la caja negra si empieza con ISA - o HYB - y tiene ▼ y es corta
+      if ((t.startsWith('ISA -') || t.startsWith('HYB -')) && t.includes('▼') && t.length < 100) {
+        // Si el texto exacto aun es el viejo, reemplazarlo
+        if (t !== '1.- Elige tu raza aquí. ▼') {
+          // Si tiene solo texto, reemplazar directo
+          if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
+            el.textContent = '1.- Elige tu raza aquí. ▼';
+          } else {
+            // Si tiene nodos internos, buscar el nodo de texto
+            let cambiado = false;
+            el.childNodes.forEach(node => {
+              if (node.nodeType === 3 && (node.textContent.includes('ISA -') || node.textContent.includes('HYB -'))) {
+                node.textContent = '1.- Elige tu raza aquí. ▼';
+                cambiado = true;
+              }
+            });
+            // Fallback: si no encontro nodo texto, forzar todo
+            if (!cambiado && (el.textContent.includes('ISA - ISA Brown') || el.textContent.includes('HYB -'))) {
+              el.textContent = '1.- Elige tu raza aquí. ▼';
+            }
           }
         }
       }
     });
 
-    // Ocultar contenedor que solo tiene flecha + Elige
-    all.filter(d => {
-      const t = d.textContent||'';
-      return t.includes('Elige aqui!') && !t.includes('Contamos') && t.length < 150;
-    }).forEach(c => c.style.setProperty('display','none','important'));
+    // Mantener ocultas las verdes por si React las recrea
+    document.querySelectorAll('div').forEach(d => {
+      const t = (d.textContent || '').trim();
+      if (t === 'Elige aqui!' || t === 'Elige aquí!') {
+        d.style.setProperty('display','none','important');
+      }
+      if ((t === '←' || t === '→') && t.length <= 3) {
+        if (!d.textContent.includes('Elige tu raza')) {
+          d.style.setProperty('display','none','important');
+          if (d.parentElement) d.parentElement.style.setProperty('display','none','important');
+        }
+      }
+    });
   }
 
-  window.addEventListener('load', fixFinal);
-  setTimeout(fixFinal, 300);
-  setTimeout(fixFinal, 1000);
-  setTimeout(fixFinal, 2000);
-  new MutationObserver(fixFinal).observe(document.body, {childList:true, subtree:true});
+  // Forzar cada 100ms para ganarle a React
+  window.addEventListener('load', forzarTextoNegro);
+  setInterval(forzarTextoNegro, 100);
+  setTimeout(forzarTextoNegro, 300);
+  setTimeout(forzarTextoNegro, 1000);
+  new MutationObserver(forzarTextoNegro).observe(document.body, {childList:true, subtree:true, characterData:true});
 })();
 </script>
      <body>
