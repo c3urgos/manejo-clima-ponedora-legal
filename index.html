@@ -69,49 +69,40 @@ div[class*="fefae0"] {
 })();
 </script>
   <style>
-/* FIX RAZA v331 DEFINITIVO - Overlay fuera de React - TODOS */
+/* FIX RAZA v332 FINAL - elige tu raza aqui - TODOS */
 #pill-nueva-raza-overlay {
   position: absolute !important;
-  background: #111 !important;
+  background: #111827 !important;
   color: white !important;
   padding: 8px 16px !important;
   border-radius: 9999px !important;
   cursor: pointer !important;
-  display: inline-flex !important;
-  align-items: center !important;
   font-weight: 700 !important;
   font-size: 14px !important;
-  z-index: 9999 !important;
-  line-height: 1 !important;
+  z-index: 99999 !important;
   white-space: nowrap !important;
 }
 </style>
 <script>
-// FIX RAZA v331 DEFINITIVO - Overlay que tapa ISA y muestra 1.- Elige tu raza aqui
+// FIX RAZA v332 FINAL - elige tu raza aqui con flecha
 (function() {
-  function findOriginal() {
-    const all = [...document.querySelectorAll('div, button, span')];
-    return all.find(el => {
+  function buscarPill() {
+    const todos = [...document.querySelectorAll('div, button, span')];
+    return todos.filter(el => {
       const t = (el.textContent || '').trim();
-      return t.length < 100 && t.length > 5 && 
-             (t === 'ISA - ISA Brown ▼' || t.startsWith('ISA - ISA Brown') || t.includes('ISA - ISA Brown ▼') || t === 'ISA - ISA Brown') &&
-             !t.includes('1.- Elige');
-    });
+      return t.length < 80 && t.length > 5 && t.includes('ISA') && t.includes('Brown') && t.includes('ISA -');
+    }).sort((a,b) => a.textContent.length - b.textContent.length)[0];
   }
-  function aplicarOverlay() {
-    document.querySelectorAll('div, button, span').forEach(el => {
+  function aplicarFix() {
+    document.querySelectorAll('div, span, button').forEach(el => {
       const t = (el.textContent || '').trim();
-      if (t === 'Elige aqui!' || t === 'Elige aquí!') {
-        el.style.setProperty('display','none','important');
-      }
+      if (t === 'Elige aqui!' || t === 'Elige aquí!') el.style.setProperty('display','none','important');
       if ((t === '←' || t === '→') && t.length === 1) {
-        if (el.parentElement && el.parentElement.textContent.length < 80) {
-          el.parentElement.style.setProperty('display','none','important');
-        }
         el.style.setProperty('display','none','important');
+        if (el.parentElement) el.parentElement.style.setProperty('display','none','important');
       }
     });
-    const orig = findOriginal();
+    const orig = buscarPill();
     if (!orig) return;
     orig.style.setProperty('opacity','0','important');
     orig.style.setProperty('pointer-events','none','important');
@@ -119,25 +110,25 @@ div[class*="fefae0"] {
     if (!overlay) {
       overlay = document.createElement('div');
       overlay.id = 'pill-nueva-raza-overlay';
-      overlay.textContent = '1.- Elige tu raza aquí. ▼';
-      overlay.addEventListener('click', () => {
-        const o = findOriginal();
-        if (o) { o.style.opacity = '1'; o.click(); setTimeout(() => { o.style.opacity = '0'; }, 100); }
-      });
+      overlay.textContent = 'elige tu raza aquí ▼';
+      overlay.onclick = () => { const o = buscarPill(); if (o) { o.style.opacity='1'; o.click(); setTimeout(()=>{o.style.opacity='0';},150); } };
       document.body.appendChild(overlay);
     }
     const rect = orig.getBoundingClientRect();
-    overlay.style.left = (rect.left + window.scrollX) + 'px';
-    overlay.style.top = (rect.top + window.scrollY) + 'px';
+    if (rect.width > 0) {
+      overlay.style.left = (rect.left + window.scrollX) + 'px';
+      overlay.style.top = (rect.top + window.scrollY) + 'px';
+      overlay.style.display = 'inline-flex';
+    }
   }
-  window.addEventListener('load', aplicarOverlay);
-  window.addEventListener('resize', aplicarOverlay);
-  window.addEventListener('scroll', aplicarOverlay);
-  setInterval(aplicarOverlay, 300);
-  new MutationObserver(aplicarOverlay).observe(document.body, {childList:true, subtree:true});
+  window.addEventListener('load', aplicarFix);
+  window.addEventListener('resize', aplicarFix);
+  window.addEventListener('scroll', aplicarFix);
+  setInterval(aplicarFix, 200);
+  new MutationObserver(aplicarFix).observe(document.body, {childList:true, subtree:true});
 })();
 </script>
-           <body>
+            <body>
   <div id="root"></div>
   
   <script type="module">var Sa=Object.create;var{getPrototypeOf:Pa,defineProperty:Tu,getOwnPropertyNames:za}=Object;var Va=Object.prototype.hasOwnProperty;var gn=(e,n,t)=>{t=e!=null?Sa(Pa(e)):{};let r=n||!e||!e.__esModule?Tu(t,"default",{value:e,enumerable:!0}):t;for(let l of za(e))if(!Va.call(r,l))Tu(r,l,{get:()=>e[l],enumerable:!0});return r};var nl=(e,n)=>()=>(n||e((n={exports:{}}).exports,n),n.exports);var Ca=(e,n)=>{for(var t in n)Tu(e,t,{get:n[t],enumerable:!0,configurable:!0,set:(r)=>n[t]=()=>r})};var Xa=(e,n)=>()=>(e&&(n=e(e=0)),n);var $t=nl((_a)=>{var jt=Symbol.for("react.element"),Na=Symbol.for("react.portal"),Ea=Symbol.for("react.fragment"),Ua=Symbol.for("react.strict_mode"),La=Symbol.for("react.profiler"),Oa=Symbol.for("react.provider"),Wa=Symbol.for("react.context"),Fa=Symbol.for("react.forward_ref"),Ka=Symbol.for("react.suspense"),qa=Symbol.for("react.memo"),Qa=Symbol.for("react.lazy"),kf=Symbol.iterator;function Ta(e){if(e===null||typeof e!=="object")return null;return e=kf&&e[kf]||e["@@iterator"],typeof e==="function"?e:null}var zf={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},Vf=Object.assign,Cf={};function yt(e,n,t){this.props=e,this.context=n,this.refs=Cf,this.updater=t||zf}yt.prototype.isReactComponent={};yt.prototype.setState=function(e,n){if(typeof e!=="object"&&typeof e!=="function"&&e!=null)throw Error("setState(...): takes an object of state variables to update or a function which returns an object of state variables.");this.updater.enqueueSetState(this,e,n,"setState")};yt.prototype.forceUpdate=function(e){this.updater.enqueueForceUpdate(this,e,"forceUpdate")};function Xf(){}Xf.prototype=yt.prototype;function Iu(e,n,t){this.props=e,this.context=n,this.refs=Cf,this.updater=t||zf}var Zu=Iu.prototype=new Xf;Zu.constructor=Iu;Vf(Zu,yt.prototype);Zu.isPureReactComponent=!0;var Sf=Array.isArray,Nf=Object.prototype.hasOwnProperty,Ju={current:null},Ef={key:!0,ref:!0,__self:!0,__source:!0};function Uf(e,n,t){var r,l={},u=null,i=null;if(n!=null)for(r in n.ref!==void 0&&(i=n.ref),n.key!==void 0&&(u=""+n.key),n)Nf.call(n,r)&&!Ef.hasOwnProperty(r)&&(l[r]=n[r]);var o=arguments.length-2;if(o===1)l.children=t;else if(1<o){for(var f=Array(o),c=0;c<o;c++)f[c]=arguments[c+2];l.children=f}if(e&&e.defaultProps)for(r in o=e.defaultProps,o)l[r]===void 0&&(l[r]=o[r]);return{$$typeof:jt,type:e,key:u,ref:i,props:l,_owner:Ju.current}}function Da(e,n){return{$$typeof:jt,type:e.type,key:n,ref:e.ref,props:e.props,_owner:e._owner}}function _u(e){return typeof e==="object"&&e!==null&&e.$$typeof===jt}function Ia(e){var n={"=":"=0",":":"=2"};return"$"+e.replace(/[=:]/g,function(t){return n[t]})}var Pf=/\/+/g;function Du(e,n){return typeof e==="object"&&e!==null&&e.key!=null?Ia(""+e.key):n.toString(36)}function rl(e,n,t,r,l){var u=typeof e;if(u==="undefined"||u==="boolean")e=null;var i=!1;if(e===null)i=!0;else switch(u){case"string":case"number":i=!0;break;case"object":switch(e.$$typeof){case jt:case Na:i=!0}}if(i)return i=e,l=l(i),e=r===""?"."+Du(i,0):r,Sf(l)?(t="",e!=null&&(t=e.replace(Pf,"$&/")+"/"),rl(l,n,t,"",function(c){return c})):l!=null&&(_u(l)&&(l=Da(l,t+(!l.key||i&&i.key===l.key?"":(""+l.key).replace(Pf,"$&/")+"/")+e)),n.push(l)),1;if(i=0,r=r===""?".":r+":",Sf(e))for(var o=0;o<e.length;o++){u=e[o];var f=r+Du(u,o);i+=rl(u,n,t,f,l)}else if(f=Ta(e),typeof f==="function")for(e=f.call(e),o=0;!(u=e.next()).done;)u=u.value,f=r+Du(u,o++),i+=rl(u,n,t,f,l);else if(u==="object")throw n=String(e),Error("Objects are not valid as a React child (found: "+(n==="[object Object]"?"object with keys {"+Object.keys(e).join(", ")+"}":n)+"). If you meant to render a collection of children, use an array instead.");return i}function tl(e,n,t){if(e==null)return e;var r=[],l=0;return rl(e,r,"","",function(u){return n.call(t,u,l++)}),r}function Za(e){if(e._status===-1){var n=e._result;n=n(),n.then(function(t){if(e._status===0||e._status===-1)e._status=1,e._result=t},function(t){if(e._status===0||e._status===-1)e._status=2,e._result=t}),e._status===-1&&(e._status=0,e._result=n)}if(e._status===1)return e._result.default;throw e._result}var we={current:null},ll={transition:null},Ja={ReactCurrentDispatcher:we,ReactCurrentBatchConfig:ll,ReactCurrentOwner:Ju};function Lf(){throw Error("act(...) is not supported in production builds of React.")}_a.Children={map:tl,forEach:function(e,n,t){tl(e,function(){n.apply(this,arguments)},t)},count:function(e){var n=0;return tl(e,function(){n++}),n},toArray:function(e){return tl(e,function(n){return n})||[]},only:function(e){if(!_u(e))throw Error("React.Children.only expected to receive a single React element child.");return e}};_a.Component=yt;_a.Fragment=Ea;_a.Profiler=La;_a.PureComponent=Iu;_a.StrictMode=Ua;_a.Suspense=Ka;_a.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=Ja;_a.act=Lf;_a.cloneElement=function(e,n,t){if(e===null||e===void 0)throw Error("React.cloneElement(...): The argument must be a React element, but you passed "+e+".");var r=Vf({},e.props),l=e.key,u=e.ref,i=e._owner;if(n!=null){if(n.ref!==void 0&&(u=n.ref,i=Ju.current),n.key!==void 0&&(l=""+n.key),e.type&&e.type.defaultProps)var o=e.type.defaultProps;for(f in n)Nf.call(n,f)&&!Ef.hasOwnProperty(f)&&(r[f]=n[f]===void 0&&o!==void 0?o[f]:n[f])}var f=arguments.length-2;if(f===1)r.children=t;else if(1<f){o=Array(f);for(var c=0;c<f;c++)o[c]=arguments[c+2];r.children=o}return{$$typeof:jt,type:e.type,key:l,ref:u,props:r,_owner:i}};_a.createContext=function(e){return e={$$typeof:Wa,_currentValue:e,_currentValue2:e,_threadCount:0,Provider:null,Consumer:null,_defaultValue:null,_globalName:null},e.Provider={$$typeof:Oa,_context:e},e.Consumer=e};_a.createElement=Uf;_a.createFactory=function(e){var n=Uf.bind(null,e);return n.type=e,n};_a.createRef=function(){return{current:null}};_a.forwardRef=function(e){return{$$typeof:Fa,render:e}};_a.isValidElement=_u;_a.lazy=function(e){return{$$typeof:Qa,_payload:{_status:-1,_result:e},_init:Za}};_a.memo=function(e,n){return{$$typeof:qa,type:e,compare:n===void 0?null:n}};_a.startTransition=function(e){var n=ll.transition;ll.transition={};try{e()}finally{ll.transition=n}};_a.unstable_act=Lf;_a.useCallback=function(e,n){return we.current.useCallback(e,n)};_a.useContext=function(e){return we.current.useContext(e)};_a.useDebugValue=function(){};_a.useDeferredValue=function(e){return we.current.useDeferredValue(e)};_a.useEffect=function(e,n){return we.current.useEffect(e,n)};_a.useId=function(){return we.current.useId()};_a.useImperativeHandle=function(e,n,t){return we.current.useImperativeHandle(e,n,t)};_a.useInsertionEffect=function(e,n){return we.current.useInsertionEffect(e,n)};_a.useLayoutEffect=function(e,n){return we.current.useLayoutEffect(e,n)};_a.useMemo=function(e,n){return we.current.useMemo(e,n)};_a.useReducer=function(e,n,t){return we.current.useReducer(e,n,t)};_a.useRef=function(e){return we.current.useRef(e)};_a.useState=function(e){return we.current.useState(e)};_a.useSyncExternalStore=function(e,n,t){return we.current.useSyncExternalStore(e,n,t)};_a.useTransition=function(){return we.current.useTransition()};_a.version="18.3.1"});var Tf=nl((Xp)=>{function Ru(e,n){var t=e.length;e.push(n);e:for(;0<t;){var r=t-1>>>1,l=e[r];if(0<ul(l,n))e[r]=n,e[t]=l,t=r;else break e}}function Re(e){return e.length===0?null:e[0]}function cl(e){if(e.length===0)return null;var n=e[0],t=e.pop();if(t!==n){e[0]=t;e:for(var r=0,l=e.length,u=l>>>1;r<u;){var i=2*(r+1)-1,o=e[i],f=i+1,c=e[f];if(0>ul(o,t))f<l&&0>ul(c,o)?(e[r]=c,e[f]=t,r=f):(e[r]=o,e[i]=t,r=i);else if(f<l&&0>ul(c,t))e[r]=c,e[f]=t,r=f;else break e}}return n}function ul(e,n){var t=e.sortIndex-n.sortIndex;return t!==0?t:e.id-n.id}if(typeof performance==="object"&&typeof performance.now==="function")gu=performance,Xp.unstable_now=function(){return gu.now()};else il=Date,Hu=il.now(),Xp.unstable_now=function(){return il.now()-Hu};var gu,il,Hu,en=[],Pn=[],Cp=1,Te=null,ve=3,Al=!1,Hn=!1,er=!1,Wf=typeof setTimeout==="function"?setTimeout:null,Ff=typeof clearTimeout==="function"?clearTimeout:null,Of=typeof setImmediate<"u"?setImmediate:null;typeof navigator<"u"&&navigator.scheduling!==void 0&&navigator.scheduling.isInputPending!==void 0&&navigator.scheduling.isInputPending.bind(navigator.scheduling);function Gu(e){for(var n=Re(Pn);n!==null;){if(n.callback===null)cl(Pn);else if(n.startTime<=e)cl(Pn),n.sortIndex=n.expirationTime,Ru(en,n);else break;n=Re(Pn)}}function Mu(e){if(er=!1,Gu(e),!Hn)if(Re(en)!==null)Hn=!0,ju(xu);else{var n=Re(Pn);n!==null&&$u(Mu,n.startTime-e)}}function xu(e,n){Hn=!1,er&&(er=!1,Ff(nr),nr=-1),Al=!0;var t=ve;try{Gu(n);for(Te=Re(en);Te!==null&&(!(Te.expirationTime>n)||e&&!Qf());){var r=Te.callback;if(typeof r==="function"){Te.callback=null,ve=Te.priorityLevel;var l=r(Te.expirationTime<=n);n=Xp.unstable_now(),typeof l==="function"?Te.callback=l:Te===Re(en)&&cl(en),Gu(n)}else cl(en);Te=Re(en)}if(Te!==null)var u=!0;else{var i=Re(Pn);i!==null&&$u(Mu,i.startTime-n),u=!1}return u}finally{Te=null,ve=t,Al=!1}}var sl=!1,ol=null,nr=-1,Kf=5,qf=-1;function Qf(){return Xp.unstable_now()-qf<Kf?!1:!0}function Yu(){if(ol!==null){var e=Xp.unstable_now();qf=e;var n=!0;try{n=ol(!0,e)}finally{n?bt():(sl=!1,ol=null)}}else sl=!1}var bt;if(typeof Of==="function")bt=function(){Of(Yu)};else if(typeof MessageChannel<"u")fl=new MessageChannel,Bu=fl.port2,fl.port1.onmessage=Yu,bt=function(){Bu.postMessage(null)};else bt=function(){Wf(Yu,0)};var fl,Bu;function ju(e){ol=e,sl||(sl=!0,bt())}function $u(e,n){nr=Wf(function(){e(Xp.unstable_now())},n)}Xp.unstable_IdlePriority=5;Xp.unstable_ImmediatePriority=1;Xp.unstable_LowPriority=4;Xp.unstable_NormalPriority=3;Xp.unstable_Profiling=null;Xp.unstable_UserBlockingPriority=2;Xp.unstable_cancelCallback=function(e){e.callback=null};Xp.unstable_continueExecution=function(){Hn||Al||(Hn=!0,ju(xu))};Xp.unstable_forceFrameRate=function(e){0>e||125<e?console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported"):Kf=0<e?Math.floor(1000/e):5};Xp.unstable_getCurrentPriorityLevel=function(){return ve};Xp.unstable_getFirstCallbackNode=function(){return Re(en)};Xp.unstable_next=function(e){switch(ve){case 1:case 2:case 3:var n=3;break;default:n=ve}var t=ve;ve=n;try{return e()}finally{ve=t}};Xp.unstable_pauseExecution=function(){};Xp.unstable_requestPaint=function(){};Xp.unstable_runWithPriority=function(e,n){switch(e){case 1:case 2:case 3:case 4:case 5:break;default:e=3}var t=ve;ve=e;try{return n()}finally{ve=t}};Xp.unstable_scheduleCallback=function(e,n,t){var r=Xp.unstable_now();switch(typeof t==="object"&&t!==null?(t=t.delay,t=typeof t==="number"&&0<t?r+t:r):t=r,e){case 1:var l=-1;break;case 2:l=250;break;case 5:l=1073741823;break;case 4:l=1e4;break;default:l=5000}return l=t+l,e={id:Cp++,callback:n,priorityLevel:e,startTime:t,expirationTime:l,sortIndex:-1},t>r?(e.sortIndex=t,Ru(Pn,e),Re(en)===null&&e===Re(Pn)&&(er?(Ff(nr),nr=-1):er=!0,$u(Mu,t-r))):(e.sortIndex=l,Ru(en,e),Hn||Al||(Hn=!0,ju(xu))),e};Xp.unstable_shouldYield=Qf;Xp.unstable_wrapCallback=function(e){var n=ve;return function(){var t=ve;ve=n;try{return e.apply(this,arguments)}finally{ve=t}}}});var uf={};Ca(uf,{version:()=>js,unstable_renderSubtreeIntoContainer:()=>xs,unstable_batchedUpdates:()=>Ms,unmountComponentAtNode:()=>Bs,render:()=>Gs,hydrateRoot:()=>Hs,hydrate:()=>gs,flushSync:()=>Rs,findDOMNode:()=>Ys,createRoot:()=>_s,createPortal:()=>Js,__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:()=>Zs});function X(e){for(var n="https://reactjs.org/docs/error-decoder.html?invariant="+e,t=1;t<arguments.length;t++)n+="&args[]="+encodeURIComponent(arguments[t]);return"Minified React error #"+e+"; visit "+n+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}function it(e,n){Dt(e,n),Dt(e+"Capture",n)}function Dt(e,n){Xr[e]=n;for(e=0;e<n.length;e++)Yc.add(n[e])}function Hp(e){if(ki.call(If,e))return!0;if(ki.call(Df,e))return!1;if(gp.test(e))return If[e]=!0;return Df[e]=!0,!1}function Gp(e,n,t,r){if(t!==null&&t.type===0)return!1;switch(typeof n){case"function":case"symbol":return!0;case"boolean":if(r)return!1;if(t!==null)return!t.acceptsBooleans;return e=e.toLowerCase().slice(0,5),e!=="data-"&&e!=="aria-";default:return!1}}function Bp(e,n,t,r){if(n===null||typeof n>"u"||Gp(e,n,t,r))return!0;if(r)return!1;if(t!==null)switch(t.type){case 3:return!n;case 4:return n===!1;case 5:return isNaN(n);case 6:return isNaN(n)||1>n}return!1}function Pe(e,n,t,r,l,u,i){this.acceptsBooleans=n===2||n===3||n===4,this.attributeName=r,this.attributeNamespace=l,this.mustUseProperty=t,this.propertyName=e,this.type=n,this.sanitizeURL=u,this.removeEmptyString=i}function yo(e){return e[1].toUpperCase()}function ho(e,n,t,r){var l=ae.hasOwnProperty(n)?ae[n]:null;if(l!==null?l.type!==0:r||!(2<n.length)||n[0]!=="o"&&n[0]!=="O"||n[1]!=="n"&&n[1]!=="N")Bp(n,t,l,r)&&(t=null),r||l===null?Hp(n)&&(t===null?e.removeAttribute(n):e.setAttribute(n,""+t)):l.mustUseProperty?e[l.propertyName]=t===null?l.type===3?!1:"":t:(n=l.attributeName,r=l.attributeNamespace,t===null?e.removeAttribute(n):(l=l.type,t=l===3||l===4&&t===!0?"":""+t,r?e.setAttributeNS(r,n,t):e.setAttribute(n,t)))}function tr(e){if(e===null||typeof e!=="object")return null;return e=Zf&&e[Zf]||e["@@iterator"],typeof e==="function"?e:null}function cr(e){if(bu===void 0)try{throw Error()}catch(t){var n=t.stack.trim().match(/\n( *(at )?)/);bu=n&&n[1]||""}return`
