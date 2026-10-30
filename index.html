@@ -98,5 +98,173 @@ function activarPremium(){
   window.addEventListener('load', fix);
 })();
 </script>
+
+  <style>
+/* FIX LAYOUT v337 - 1.- Elige tu raza exactamente arriba de caja + flecha + icono ISA arriba en movil */
+@media screen and (max-width: 768px) {
+  /* Hacer que el contenedor de la raza sea columna pero con icono arriba */
+  div:has(> div:has(> div[class*="bg-[#B91C1C]"])) {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+  </style>
+
+
+
+<script>
+// FIX LAYOUT v338 - Orden exacto: Arriba [Cuadro ISA] -> medio 1.- Elige tu raza ↓ -> abajo [ISA - ISA Brown + catalogo]
+(function() {
+  function aplicarOrden() {
+    try {
+      // Buscar label 1.- Elige tu raza
+      let label = null;
+      for (let el of document.querySelectorAll('div, span, h3, h2, p')) {
+        const t = (el.textContent || '').trim();
+        if (t === '1.- Elige tu raza' || (t.startsWith('1.- Elige tu raza') && t.length < 30)) {
+          // Verificar que sea el label corto, no el que está dentro de COMO USAR
+          if (!el.closest('div[class*="fefae0"]')) {
+            label = el;
+            break;
+          }
+        }
+      }
+
+      // Buscar caja principal (contiene Contamos con catalogo + ISA - ISA Brown)
+      let breedBox = null;
+      let candidates = [...document.querySelectorAll('div')].filter(el => {
+        const txt = el.textContent || '';
+        return txt.includes('Contamos con un catalogo de 170 razas') && txt.includes('ISA - ISA Brown');
+      });
+      if (candidates.length > 0) {
+        // Tomar el que es mas pequeño (la caja misma, no un contenedor gigante)
+        candidates.sort((a,b) => a.textContent.length - b.textContent.length);
+        breedBox = candidates[0];
+        // Subir hasta encontrar el contenedor con borde redondeado que es la caja visual
+        let p = breedBox;
+        for (let i=0; i<6; i++) {
+          if (!p) break;
+          const cls = p.className || '';
+          if (cls.includes('rounded-2xl') || cls.includes('rounded-xl') || cls.includes('border') && cls.includes('shadow')) {
+            breedBox = p;
+            break;
+          }
+          // Si el padre contiene el pill y es mas grande, ese es la caja
+          if (p.parentElement && p.parentElement.textContent.includes('Contamos con un catalogo')) {
+            const parentTextLen = p.parentElement.textContent.length;
+            if (parentTextLen < 2000) {
+              p = p.parentElement;
+              continue;
+            }
+          }
+          p = p.parentElement;
+        }
+      }
+
+      // Buscar cuadro ISA (cuadro rojo con ISA Brown Origen Francia)
+      let iconBox = null;
+      let iconCands = [...document.querySelectorAll('div')].filter(el => {
+        const txt = el.textContent || '';
+        return txt.includes('ISA Brown') && txt.includes('Origen Francia') && txt.length < 150;
+      });
+      if (iconCands.length > 0) {
+        // El wrapper que contiene el cuadro rojo
+        let cand = iconCands[0];
+        // Subir 2 niveles para agarrar el contenedor completo del icono
+        let wrapper = cand;
+        for (let i=0; i<3; i++) {
+          if (!wrapper.parentElement) break;
+          // Si el padre contiene solo ISA Brown y Origen Francia, seguir subiendo
+          if (wrapper.parentElement.textContent.includes('ISA Brown') && wrapper.parentElement.textContent.length < 300) {
+            wrapper = wrapper.parentElement;
+          } else {
+            break;
+          }
+        }
+        iconBox = wrapper;
+      }
+
+      if (!label || !breedBox || !iconBox) return;
+
+      // Asegurar que los 3 estén en el mismo contenedor padre o moverlos
+      let container = breedBox.parentElement;
+      if (!container) return;
+
+      // Si iconBox no está en el mismo contenedor que breedBox, moverlo
+      if (!container.contains(iconBox)) {
+        // Buscar contenedor común
+        let common = container;
+        while (common && !common.contains(iconBox)) {
+          common = common.parentElement;
+        }
+        if (common) container = common;
+      }
+
+      // Ahora forzar orden: iconBox arriba, label medio, breedBox abajo
+      // Solo si no están ya en ese orden
+      const children = [...container.children];
+      const iconIdx = children.indexOf(iconBox);
+      const labelIdx = children.indexOf(label);
+      const boxIdx = children.indexOf(breedBox);
+
+      // Si label no está en container, insertarlo
+      if (labelIdx === -1) {
+        container.insertBefore(label, breedBox);
+      }
+      if (iconIdx === -1) {
+        container.insertBefore(iconBox, label);
+      }
+
+      // Re-ordenar si es necesario
+      // Queremos: iconBox -> label -> breedBox
+      const currentChildren = [...container.children];
+      const iIcon = currentChildren.indexOf(iconBox);
+      const iLabel = currentChildren.indexOf(label);
+      const iBox = currentChildren.indexOf(breedBox);
+
+      if (iIcon > iLabel || iLabel > iBox || iIcon > iBox) {
+        // Reordenar
+        container.insertBefore(iconBox, container.firstChild);
+        container.insertBefore(label, breedBox);
+      }
+
+      // Estilos finales
+      // Label con flecha
+      let txt = label.textContent.trim().replace(/→|↓|▼|➔|➜/g, '').trim();
+      if (!txt.includes('↓')) {
+        label.textContent = txt + ' ↓';
+      }
+      label.style.display = 'block';
+      label.style.fontWeight = '800';
+      label.style.fontSize = '15px';
+      label.style.margin = '12px 0 8px 4px';
+      label.style.order = '2';
+
+      iconBox.style.display = 'block';
+      iconBox.style.marginBottom = '4px';
+      iconBox.style.order = '1';
+
+      breedBox.style.display = 'block';
+      breedBox.style.order = '3';
+      breedBox.style.marginTop = '4px';
+
+      // Si el contenedor es flex, asegurar columna
+      if (window.innerWidth <= 768) {
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.gap = '0px';
+      }
+
+    } catch(e) {
+      console.log('Orden v338 error', e);
+    }
+  }
+
+  setInterval(aplicarOrden, 200);
+  new MutationObserver(aplicarOrden).observe(document.documentElement, {childList:true, subtree:true});
+  window.addEventListener('load', aplicarOrden);
+})();
+</script>
+
 </body>
 </html>
