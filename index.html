@@ -423,55 +423,51 @@ function activarPremium(){
 </div>
 
 <script>
-// FIX ADS V344 - Intersticial al pinchar "Elige tu raza aquí" en versión gratis
+// FIX ADS V345 - Intersticial + fix pegado al continuar
 (function(){
   const OVERLAY = document.getElementById('ad-interstitial-overlay');
   const BTN_CONT = document.getElementById('ad-interstitial-continue');
   const COUNT_SPAN = document.getElementById('ad-countdown');
-  const ADSLOT = document.getElementById('ad-interstitial-adslot');
-  let pendingClickTarget = null;
   let timer = null;
   let seconds = 5;
+  window._allowNextEligeClick = false;
 
   function isPremium() {
     try {
-      // Revisa flags que uses para premium
       const p1 = localStorage.getItem('pp_premium');
       const p2 = localStorage.getItem('premium_mensual_2990');
       const p3 = localStorage.getItem('isPremium');
       if (p1==='true' || p1==='1' || p2==='true' || p3==='true') return true;
-      // Si Android te inyecta window.isPremium
       if (window.isPremium === true) return true;
       if (window.Android && window.Android.isPremium && window.Android.isPremium()) return true;
     } catch(e){}
-    return false; // por defecto es GRATIS -> muestra ads
+    return false;
   }
 
-  function showAdInterstitial(targetEl) {
-    if (isPremium()) {
-      // Premium: deja pasar directo
-      if (targetEl) targetEl.click();
-      return;
-    }
-    pendingClickTarget = targetEl;
+  function findRealEligeButton() {
+    // Busca el pill real más pequeño que dice elige tu raza aquí
+    let best = null;
+    document.querySelectorAll('div, button').forEach(el=>{
+      const t = (el.textContent||'').toLowerCase().trim();
+      if (t === 'elige tu raza aquí' || t === 'elige tu raza aquí ▼' || t === 'elige tu raza aqui') {
+        if (!best || el.textContent.length < best.textContent.length) best = el;
+      }
+    });
+    return best;
+  }
+
+  function showAdInterstitial() {
+    if (isPremium()) return;
     seconds = 5;
     COUNT_SPAN.textContent = seconds;
     BTN_CONT.classList.remove('enabled');
     BTN_CONT.textContent = 'Continuar a elegir raza ➔';
+    document.getElementById('ad-interstitial-timer').textContent = 'Publicidad: podrás continuar en 5s';
     OVERLAY.style.display = 'flex';
-
-    // Aquí disparas tu AdMob nativo si estás en WebView Android
-    try {
-      if (window.Android && window.Android.showInterstitial) {
-        window.Android.showInterstitial();
-      }
-      // Para AdSense web, descomenta:
-      // (adsbygoogle = window.adsbygoogle || []).push({});
-    } catch(e){}
-
+    try { if (window.Android && window.Android.showInterstitial) window.Android.showInterstitial(); } catch(e){}
     timer = setInterval(()=>{
       seconds--;
-      COUNT_SPAN.textContent = seconds;
+      if (COUNT_SPAN) COUNT_SPAN.textContent = seconds;
       if (seconds <= 0) {
         clearInterval(timer);
         document.getElementById('ad-interstitial-timer').textContent = '¡Gracias por ver el anuncio!';
@@ -481,31 +477,46 @@ function activarPremium(){
     }, 1000);
   }
 
-  function hideAdAndContinue() {
+  function hideAdAndAllowNextClick() {
     OVERLAY.style.display = 'none';
     if (timer) clearInterval(timer);
-    // Ahora sí, abre el listado de razas
-    if (pendingClickTarget) {
-      // Esperar un tick y re-disparar el click original
-      const t = pendingClickTarget;
-      pendingClickTarget = null;
-      setTimeout(()=>{ t.click(); }, 150);
-    }
+    // Permitir 1 click libre sin volver a mostrar publicidad
+    window._allowNextEligeClick = true;
+    // Auto-abrir el selector para que no tenga que pinchar 2 veces
+    setTimeout(()=>{
+      const realBtn = findRealEligeButton();
+      if (realBtn) {
+        realBtn.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
+      }
+      // Quitar permiso después de 3 segundos por seguridad
+      setTimeout(()=>{ window._allowNextEligeClick = false; }, 3000);
+    }, 200);
   }
 
-  BTN_CONT.addEventListener('click', function(){
+  BTN_CONT.addEventListener('click', function(e){
+    e.stopPropagation();
     if (!this.classList.contains('enabled')) return;
-    hideAdAndContinue();
+    hideAdAndAllowNextClick();
   });
 
-  // Interceptar clicks en "Elige tu raza aquí"
   function isEligeButton(el) {
     if (!el) return false;
-    const txt = (el.textContent || '').toLowerCase();
-    return txt.includes('elige tu raza aqu') && el.textContent.length < 100;
+    const txt = (el.textContent || '').toLowerCase().trim();
+    return txt.includes('elige tu raza aqu') && el.textContent.length < 80;
   }
 
   document.addEventListener('click', function(e){
+    if (window._allowNextEligeClick) {
+      // Dejar pasar este click y luego bloquear de nuevo
+      window._allowNextEligeClick = false;
+      return;
+    }
+    if (OVERLAY.style.display === 'flex') {
+      // Si ya está el ad abierto, bloquear clicks de fondo
+      if (e.target.closest && e.target.closest('#ad-interstitial-overlay')) return;
+      e.preventDefault(); e.stopPropagation(); return;
+    }
+    if (isPremium()) return;
     const path = e.composedPath ? e.composedPath() : [e.target];
     let found = null;
     for (let n of path) {
@@ -516,22 +527,14 @@ function activarPremium(){
       }
     }
     if (found) {
-      // Si el overlay ya está visible, no interceptar de nuevo
-      if (OVERLAY.style.display === 'flex') {
-        e.preventDefault(); e.stopPropagation(); return;
-      }
-      // Si es Premium, dejar pasar
-      if (isPremium()) return;
-      // Gratis -> mostrar ad y bloquear apertura
       e.preventDefault();
       e.stopImmediatePropagation();
       e.stopPropagation();
-      showAdInterstitial(found);
+      showAdInterstitial();
     }
-  }, true); // capture true para ganarle a React
+  }, true);
 
-  // Para test rápido en PC: window.mostrarPublicidad()
-  window.mostrarPublicidad = function(){ showAdInterstitial(document.body); };
+  window.mostrarPublicidad = function(){ showAdInterstitial(); };
 })();
 </script>
 
