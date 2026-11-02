@@ -367,174 +367,154 @@ function activarPremium(){
 </script>
 
 
+
 <style>
 #ad-interstitial-overlay {
-  position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.85);
+  position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.82);
   display: none; align-items: center; justify-content: center; flex-direction: column;
-  font-family: Inter, Arial, sans-serif;
+  font-family: Inter, Arial, sans-serif; backdrop-filter: blur(2px);
 }
 #ad-interstitial-box {
-  background: white; border-radius: 16px; width: 90%; max-width: 380px;
-  padding: 16px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  border: 3px solid #2E7D32;
+  background: white; border-radius: 18px; width: 92%; max-width: 380px;
+  padding: 16px; text-align: center; box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+  border: 3px solid #2E7D32; animation: popIn 0.25s ease;
 }
-#ad-interstitial-timer {
-  font-size: 14px; color: #666; margin: 8px 0;
+@keyframes popIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+#ad-interstitial-box-top { font-size:11px; color:#2E7D32; font-weight:800; letter-spacing:0.8px; margin-bottom:10px; }
+#ad-interstitial-adslot {
+  width: 100%; min-height: 220px; background: #f1f8e9;
+  border: 2px dashed #7CB342; border-radius: 12px; display:flex;
+  align-items:center; justify-content:center; flex-direction:column;
+  margin: 8px 0 12px 0; padding:12px;
 }
+#ad-interstitial-timer { font-size: 14px; color: #33691E; font-weight: 600; margin-top: 10px; }
+#ad-countdown-num { font-size: 20px; font-weight: 900; color: #2E7D32; }
 #ad-interstitial-continue {
-  background: #2E7D32; color: white; border: none; padding: 12px 20px;
-  border-radius: 10px; font-weight: bold; width: 100%; font-size: 16px;
-  opacity: 0.4; pointer-events: none; margin-top: 10px;
+  background: #9E9E9E; color: white; border: none; padding: 14px 20px;
+  border-radius: 12px; font-weight: 800; width: 100%; font-size: 16px;
+  opacity: 0.6; pointer-events: none; transition: all 0.2s;
 }
 #ad-interstitial-continue.enabled {
-  opacity: 1; pointer-events: auto; cursor: pointer;
-}
-#ad-interstitial-skip {
-  position: absolute; top: 12px; right: 12px; background: #000; color: #fff;
-  border-radius: 20px; padding: 6px 12px; font-size: 12px; border: none;
-}
-#ad-interstitial-adslot {
-  width: 100%; min-height: 250px; background: #e8f5e9;
-  border: 2px dashed #2E7D32; border-radius: 10px; display:flex;
-  align-items:center; justify-content:center; flex-direction:column;
-  margin: 10px 0; padding:10px;
+  background: #2E7D32; opacity: 1; pointer-events: auto; cursor: pointer; transform: scale(1.02);
 }
 </style>
+
 <div id="ad-interstitial-overlay">
   <div id="ad-interstitial-box">
-    <div style="font-size:12px; color:#2E7D32; font-weight:bold; letter-spacing:1px;">🌿 PUBLICIDAD - VERSIÓN GRATIS</div>
+    <div id="ad-interstitial-box-top">🌿 PUBLICIDAD - VERSIÓN GRATIS</div>
     <div id="ad-interstitial-adslot">
-      <!-- Aquí va tu AdMob real. Por ahora placeholder banner/video -->
-      <div id="admob-interstitial-container" style="width:100%;">
-        <div style="background:#FFF9C4; padding:10px; border-radius:8px;">
-          <p style="margin:0; font-size:13px; color:#333;">Tu anuncio AdMob / AdSense aquí</p>
-          <p style="margin:6px 0 0 0; font-size:11px; color:#666;">Banner 300x250 - Video recompensado</p>
-          <!-- EJEMPLO: reemplaza esto por tu código AdMob web -->
-          <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX" data-ad-format="auto"></ins> -->
-        </div>
-        <!-- Contenedor extra para que Android WebView inyecte AdMob nativo si lo usas -->
-        <div id="native-ad-slot" style="margin-top:10px; min-height:50px;"></div>
+      <div style="background:#FFF9C4; padding:10px 14px; border-radius:8px; width:100%; box-sizing:border-box;">
+        <p style="margin:0; font-size:13px; color:#333; font-weight:700;">Tu anuncio AdMob / AdSense aquí</p>
+        <p style="margin:4px 0 0 0; font-size:11px; color:#666;">Banner 300x250 - Video recompensado</p>
       </div>
-      <div id="ad-interstitial-timer">Publicidad: podrás continuar en <span id="ad-countdown">5</span>s</div>
+      <div id="ad-interstitial-timer">Podrás continuar en <span id="ad-countdown-num">5</span>s</div>
     </div>
-    <button id="ad-interstitial-continue">Continuar a elegir raza ➔</button>
-    <p style="font-size:10px; color:#888; margin-top:8px;">Versión Premium sin anuncios - $3.000/mes</p>
+    <button id="ad-interstitial-continue" disabled>Continuar a elegir raza →</button>
+    <p style="font-size:10px; color:#888; margin:10px 0 0 0;">Versión Premium sin anuncios - $3.000/mes</p>
   </div>
 </div>
 
 <script>
-// FIX ADS V345 - Intersticial + fix pegado al continuar
+// FIX ADS V346 - Contador real + no bucle
 (function(){
   const OVERLAY = document.getElementById('ad-interstitial-overlay');
-  const BTN_CONT = document.getElementById('ad-interstitial-continue');
-  const COUNT_SPAN = document.getElementById('ad-countdown');
-  let timer = null;
+  const BTN = document.getElementById('ad-interstitial-continue');
+  const COUNT_NUM = document.getElementById('ad-countdown-num');
+  const TIMER_TEXT = document.getElementById('ad-interstitial-timer');
+  let timerId = null;
   let seconds = 5;
-  window._allowNextEligeClick = false;
+  window._skipNextAd = false;
 
-  function isPremium() {
-    try {
-      const p1 = localStorage.getItem('pp_premium');
-      const p2 = localStorage.getItem('premium_mensual_2990');
-      const p3 = localStorage.getItem('isPremium');
-      if (p1==='true' || p1==='1' || p2==='true' || p3==='true') return true;
-      if (window.isPremium === true) return true;
-      if (window.Android && window.Android.isPremium && window.Android.isPremium()) return true;
-    } catch(e){}
+  function isPremium(){
+    try{
+      const vals = ['pp_premium','premium_mensual_2990','isPremium','premium'];
+      for(let k of vals){ let v = localStorage.getItem(k); if(v==='true'||v==='1') return true; }
+      if(window.isPremium===true) return true;
+      if(window.Android && window.Android.isPremium && window.Android.isPremium()) return true;
+    }catch(e){}
     return false;
   }
 
-  function findRealEligeButton() {
-    // Busca el pill real más pequeño que dice elige tu raza aquí
-    let best = null;
-    document.querySelectorAll('div, button').forEach(el=>{
-      const t = (el.textContent||'').toLowerCase().trim();
-      if (t === 'elige tu raza aquí' || t === 'elige tu raza aquí ▼' || t === 'elige tu raza aqui') {
-        if (!best || el.textContent.length < best.textContent.length) best = el;
-      }
-    });
-    return best;
-  }
-
-  function showAdInterstitial() {
-    if (isPremium()) return;
+  function showAd(){
+    if(isPremium()) return;
+    if(window._skipNextAd){ window._skipNextAd=false; return; }
     seconds = 5;
-    COUNT_SPAN.textContent = seconds;
-    BTN_CONT.classList.remove('enabled');
-    BTN_CONT.textContent = 'Continuar a elegir raza ➔';
-    document.getElementById('ad-interstitial-timer').textContent = 'Publicidad: podrás continuar en 5s';
+    COUNT_NUM.textContent = seconds;
+    TIMER_TEXT.innerHTML = 'Podrás continuar en <span id="ad-countdown-num">'+seconds+'</span>s';
+    // Re-cache span because innerHTML recreated it
+    const freshCount = document.getElementById('ad-countdown-num');
+    BTN.disabled = true;
+    BTN.classList.remove('enabled');
+    BTN.textContent = 'Continuar a elegir raza →';
     OVERLAY.style.display = 'flex';
-    try { if (window.Android && window.Android.showInterstitial) window.Android.showInterstitial(); } catch(e){}
-    timer = setInterval(()=>{
+    try{ if(window.Android && window.Android.showInterstitial) window.Android.showInterstitial(); }catch(e){}
+    if(timerId) clearInterval(timerId);
+    timerId = setInterval(()=>{
       seconds--;
-      if (COUNT_SPAN) COUNT_SPAN.textContent = seconds;
-      if (seconds <= 0) {
-        clearInterval(timer);
-        document.getElementById('ad-interstitial-timer').textContent = '¡Gracias por ver el anuncio!';
-        BTN_CONT.classList.add('enabled');
-        BTN_CONT.textContent = 'Continuar ➔ Elige tu raza';
+      const span = document.getElementById('ad-countdown-num');
+      if(span) span.textContent = seconds;
+      if(seconds<=0){
+        clearInterval(timerId);
+        TIMER_TEXT.textContent = '¡Gracias por ver el anuncio!';
+        BTN.disabled = false;
+        BTN.classList.add('enabled');
+        BTN.textContent = 'Continuar → Elige tu raza';
       }
-    }, 1000);
+    },1000);
   }
 
-  function hideAdAndAllowNextClick() {
-    OVERLAY.style.display = 'none';
-    if (timer) clearInterval(timer);
-    // Permitir 1 click libre sin volver a mostrar publicidad
-    window._allowNextEligeClick = true;
-    // Auto-abrir el selector para que no tenga que pinchar 2 veces
-    setTimeout(()=>{
-      const realBtn = findRealEligeButton();
-      if (realBtn) {
-        realBtn.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
-      }
-      // Quitar permiso después de 3 segundos por seguridad
-      setTimeout(()=>{ window._allowNextEligeClick = false; }, 3000);
-    }, 200);
+  function closeAd(){
+    OVERLAY.style.display='none';
+    if(timerId) clearInterval(timerId);
+    // Permitir 1 click siguiente SIN publicidad
+    window._skipNextAd = true;
+    // No auto-click, solo dejar pasar. Se desactiva solo después de 8 seg si no lo usa.
+    setTimeout(()=>{ window._skipNextAd=false; }, 8000);
   }
 
-  BTN_CONT.addEventListener('click', function(e){
+  BTN.addEventListener('click', function(e){
     e.stopPropagation();
-    if (!this.classList.contains('enabled')) return;
-    hideAdAndAllowNextClick();
+    if(BTN.disabled) return;
+    closeAd();
   });
 
-  function isEligeButton(el) {
-    if (!el) return false;
-    const txt = (el.textContent || '').toLowerCase().trim();
-    return txt.includes('elige tu raza aqu') && el.textContent.length < 80;
+  // Detectar el pill negro "Elige tu raza aquí"
+  function isEligePill(el){
+    if(!el || !el.textContent) return false;
+    const txt = el.textContent.trim().toLowerCase();
+    return txt.startsWith('elige tu raza aqu') && txt.length < 60;
   }
 
   document.addEventListener('click', function(e){
-    if (window._allowNextEligeClick) {
-      // Dejar pasar este click y luego bloquear de nuevo
-      window._allowNextEligeClick = false;
-      return;
-    }
-    if (OVERLAY.style.display === 'flex') {
-      // Si ya está el ad abierto, bloquear clicks de fondo
-      if (e.target.closest && e.target.closest('#ad-interstitial-overlay')) return;
+    if(OVERLAY.style.display==='flex'){
+      // bloquear fondo, pero permitir clicks dentro del overlay
+      if(e.target.closest && e.target.closest('#ad-interstitial-overlay')) return;
       e.preventDefault(); e.stopPropagation(); return;
     }
-    if (isPremium()) return;
-    const path = e.composedPath ? e.composedPath() : [e.target];
+    if(window._skipNextAd){
+      // Este es el click libre después de ver el anuncio, dejar pasar
+      window._skipNextAd = false;
+      return;
+    }
+    if(isPremium()) return;
+    let path = e.composedPath ? e.composedPath() : [e.target];
     let found = null;
-    for (let n of path) {
-      if (n && n.textContent && isEligeButton(n)) { found = n; break; }
-      if (n && n.closest) {
-        const c = n.closest('div,button');
-        if (c && isEligeButton(c)) { found = c; break; }
+    for(let n of path){
+      if(n && isEligePill(n)){ found=n; break; }
+      if(n && n.closest){
+        let c = n.closest('button, div');
+        if(c && isEligePill(c)){ found=c; break; }
       }
     }
-    if (found) {
+    if(found){
       e.preventDefault();
       e.stopImmediatePropagation();
       e.stopPropagation();
-      showAdInterstitial();
+      showAd();
     }
   }, true);
 
-  window.mostrarPublicidad = function(){ showAdInterstitial(); };
+  window.mostrarPublicidad = showAd;
 })();
 </script>
 
