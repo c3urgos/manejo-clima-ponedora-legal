@@ -41,6 +41,23 @@ try {
 } catch(e) {}
 </script>
 
+
+  <!-- Google AdSense / AdMob Web - V347 REAL -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7242606975597849"
+     crossorigin="anonymous"></script>
+  <script>
+    // Inicializar AdSense
+    try{ (adsbygoogle = window.adsbygoogle || []).push({}); }catch(e){}
+    // Para debug V347
+    window.ADMOB_IDS = {
+      publisher: "ca-app-pub-7242606975597849",
+      appId: "ca-app-pub-7242606975597849~9798114257",
+      banner: "ca-app-pub-7242606975597849/3034315227",
+      interstitial: "ca-app-pub-7242606975597849/4310254329"
+    };
+    console.log("V347 REAL ADS cargados:", window.ADMOB_IDS);
+  </script>
+
 </head>
 <body>
 <div id="root"></div>
@@ -401,11 +418,22 @@ function activarPremium(){
 
 <div id="ad-interstitial-overlay">
   <div id="ad-interstitial-box">
-    <div id="ad-interstitial-box-top">🌿 PUBLICIDAD - VERSIÓN GRATIS</div>
+    <div id="ad-interstitial-box-top">🌿 PUBLICIDAD - V347 REAL ADS - 7242606975597849</div>
     <div id="ad-interstitial-adslot">
-      <div style="background:#FFF9C4; padding:10px 14px; border-radius:8px; width:100%; box-sizing:border-box;">
-        <p style="margin:0; font-size:13px; color:#333; font-weight:700;">Tu anuncio AdMob / AdSense aquí</p>
-        <p style="margin:4px 0 0 0; font-size:11px; color:#666;">Banner 300x250 - Video recompensado</p>
+      <!-- ADMOB REAL - Intersticial_Elige_Raza -->
+      <div style="background:#ffffff; padding:0; border-radius:12px; width:100%; box-sizing:border-box; overflow:hidden;">
+        <div style="font-size:10px; color:#4CAF50; font-weight:800; letter-spacing:0.5px; padding:6px 0 4px 0; text-align:center;">ANUNCIO REAL - ca-app-pub-7242606975597849/4310254329</div>
+        <!-- Contenedor AdSense/AdMob Web -->
+        <ins class="adsbygoogle"
+             style="display:block; width:300px; height:250px; margin:0 auto;"
+             data-ad-client="ca-pub-7242606975597849"
+             data-ad-slot="4310254329"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <div style="background:#f1f8e9; padding:8px; text-align:center; font-size:11px; color:#2E7D32; font-weight:600;">
+          Si ves este cuadro, el ID real ya está cargado.<br/>
+          En APK, se mostrará el intersticial nativo automáticamente.
+        </div>
       </div>
       <div id="ad-interstitial-timer">Podrás continuar en <span id="ad-countdown-num">5</span>s</div>
     </div>
@@ -517,6 +545,19 @@ function activarPremium(){
   window.mostrarPublicidad = showAd;
 })();
 </script>
+
+
+<!-- BANNER INFERIOR REAL V347 - ca-app-pub-7242606975597849/3034315227 -->
+<div id="banner-inferior-real" style="position:fixed; bottom:0; left:0; right:0; z-index:9999; background:white; border-top:2px solid #2E7D32; padding:4px 0 0 0; text-align:center; box-shadow:0 -4px 12px rgba(0,0,0,0.15);">
+  <div style="font-size:9px; color:#4CAF50; font-weight:700; letter-spacing:0.5px;">PUBLICIDAD - V347 REAL - Banner_Gratis_Inferior</div>
+  <ins class="adsbygoogle"
+       style="display:inline-block;width:320px;height:50px"
+       data-ad-client="ca-pub-7242606975597849"
+       data-ad-slot="3034315227"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  <div style="position:absolute; top:2px; right:6px; font-size:10px; color:#999; cursor:pointer;" onclick="document.getElementById('banner-inferior-real').style.display='none'">✕</div>
+</div>
+<style>body{padding-bottom:70px !important;}</style>
 
 </body>
 </html>
