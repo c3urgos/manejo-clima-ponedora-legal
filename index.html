@@ -366,5 +366,174 @@ function activarPremium(){
 })();
 </script>
 
+
+<style>
+#ad-interstitial-overlay {
+  position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.85);
+  display: none; align-items: center; justify-content: center; flex-direction: column;
+  font-family: Inter, Arial, sans-serif;
+}
+#ad-interstitial-box {
+  background: white; border-radius: 16px; width: 90%; max-width: 380px;
+  padding: 16px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border: 3px solid #2E7D32;
+}
+#ad-interstitial-timer {
+  font-size: 14px; color: #666; margin: 8px 0;
+}
+#ad-interstitial-continue {
+  background: #2E7D32; color: white; border: none; padding: 12px 20px;
+  border-radius: 10px; font-weight: bold; width: 100%; font-size: 16px;
+  opacity: 0.4; pointer-events: none; margin-top: 10px;
+}
+#ad-interstitial-continue.enabled {
+  opacity: 1; pointer-events: auto; cursor: pointer;
+}
+#ad-interstitial-skip {
+  position: absolute; top: 12px; right: 12px; background: #000; color: #fff;
+  border-radius: 20px; padding: 6px 12px; font-size: 12px; border: none;
+}
+#ad-interstitial-adslot {
+  width: 100%; min-height: 250px; background: #e8f5e9;
+  border: 2px dashed #2E7D32; border-radius: 10px; display:flex;
+  align-items:center; justify-content:center; flex-direction:column;
+  margin: 10px 0; padding:10px;
+}
+</style>
+<div id="ad-interstitial-overlay">
+  <div id="ad-interstitial-box">
+    <div style="font-size:12px; color:#2E7D32; font-weight:bold; letter-spacing:1px;">🌿 PUBLICIDAD - VERSIÓN GRATIS</div>
+    <div id="ad-interstitial-adslot">
+      <!-- Aquí va tu AdMob real. Por ahora placeholder banner/video -->
+      <div id="admob-interstitial-container" style="width:100%;">
+        <div style="background:#FFF9C4; padding:10px; border-radius:8px;">
+          <p style="margin:0; font-size:13px; color:#333;">Tu anuncio AdMob / AdSense aquí</p>
+          <p style="margin:6px 0 0 0; font-size:11px; color:#666;">Banner 300x250 - Video recompensado</p>
+          <!-- EJEMPLO: reemplaza esto por tu código AdMob web -->
+          <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX" data-ad-format="auto"></ins> -->
+        </div>
+        <!-- Contenedor extra para que Android WebView inyecte AdMob nativo si lo usas -->
+        <div id="native-ad-slot" style="margin-top:10px; min-height:50px;"></div>
+      </div>
+      <div id="ad-interstitial-timer">Publicidad: podrás continuar en <span id="ad-countdown">5</span>s</div>
+    </div>
+    <button id="ad-interstitial-continue">Continuar a elegir raza ➔</button>
+    <p style="font-size:10px; color:#888; margin-top:8px;">Versión Premium sin anuncios - $3.000/mes</p>
+  </div>
+</div>
+
+<script>
+// FIX ADS V344 - Intersticial al pinchar "Elige tu raza aquí" en versión gratis
+(function(){
+  const OVERLAY = document.getElementById('ad-interstitial-overlay');
+  const BTN_CONT = document.getElementById('ad-interstitial-continue');
+  const COUNT_SPAN = document.getElementById('ad-countdown');
+  const ADSLOT = document.getElementById('ad-interstitial-adslot');
+  let pendingClickTarget = null;
+  let timer = null;
+  let seconds = 5;
+
+  function isPremium() {
+    try {
+      // Revisa flags que uses para premium
+      const p1 = localStorage.getItem('pp_premium');
+      const p2 = localStorage.getItem('premium_mensual_2990');
+      const p3 = localStorage.getItem('isPremium');
+      if (p1==='true' || p1==='1' || p2==='true' || p3==='true') return true;
+      // Si Android te inyecta window.isPremium
+      if (window.isPremium === true) return true;
+      if (window.Android && window.Android.isPremium && window.Android.isPremium()) return true;
+    } catch(e){}
+    return false; // por defecto es GRATIS -> muestra ads
+  }
+
+  function showAdInterstitial(targetEl) {
+    if (isPremium()) {
+      // Premium: deja pasar directo
+      if (targetEl) targetEl.click();
+      return;
+    }
+    pendingClickTarget = targetEl;
+    seconds = 5;
+    COUNT_SPAN.textContent = seconds;
+    BTN_CONT.classList.remove('enabled');
+    BTN_CONT.textContent = 'Continuar a elegir raza ➔';
+    OVERLAY.style.display = 'flex';
+
+    // Aquí disparas tu AdMob nativo si estás en WebView Android
+    try {
+      if (window.Android && window.Android.showInterstitial) {
+        window.Android.showInterstitial();
+      }
+      // Para AdSense web, descomenta:
+      // (adsbygoogle = window.adsbygoogle || []).push({});
+    } catch(e){}
+
+    timer = setInterval(()=>{
+      seconds--;
+      COUNT_SPAN.textContent = seconds;
+      if (seconds <= 0) {
+        clearInterval(timer);
+        document.getElementById('ad-interstitial-timer').textContent = '¡Gracias por ver el anuncio!';
+        BTN_CONT.classList.add('enabled');
+        BTN_CONT.textContent = 'Continuar ➔ Elige tu raza';
+      }
+    }, 1000);
+  }
+
+  function hideAdAndContinue() {
+    OVERLAY.style.display = 'none';
+    if (timer) clearInterval(timer);
+    // Ahora sí, abre el listado de razas
+    if (pendingClickTarget) {
+      // Esperar un tick y re-disparar el click original
+      const t = pendingClickTarget;
+      pendingClickTarget = null;
+      setTimeout(()=>{ t.click(); }, 150);
+    }
+  }
+
+  BTN_CONT.addEventListener('click', function(){
+    if (!this.classList.contains('enabled')) return;
+    hideAdAndContinue();
+  });
+
+  // Interceptar clicks en "Elige tu raza aquí"
+  function isEligeButton(el) {
+    if (!el) return false;
+    const txt = (el.textContent || '').toLowerCase();
+    return txt.includes('elige tu raza aqu') && el.textContent.length < 100;
+  }
+
+  document.addEventListener('click', function(e){
+    const path = e.composedPath ? e.composedPath() : [e.target];
+    let found = null;
+    for (let n of path) {
+      if (n && n.textContent && isEligeButton(n)) { found = n; break; }
+      if (n && n.closest) {
+        const c = n.closest('div,button');
+        if (c && isEligeButton(c)) { found = c; break; }
+      }
+    }
+    if (found) {
+      // Si el overlay ya está visible, no interceptar de nuevo
+      if (OVERLAY.style.display === 'flex') {
+        e.preventDefault(); e.stopPropagation(); return;
+      }
+      // Si es Premium, dejar pasar
+      if (isPremium()) return;
+      // Gratis -> mostrar ad y bloquear apertura
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+      showAdInterstitial(found);
+    }
+  }, true); // capture true para ganarle a React
+
+  // Para test rápido en PC: window.mostrarPublicidad()
+  window.mostrarPublicidad = function(){ showAdInterstitial(document.body); };
+})();
+</script>
+
 </body>
 </html>
