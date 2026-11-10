@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- V404 PREMIUM ARRIBA STICKY + MENSUAL+ANUAL humedad 1 linea titulo Ventilar Nebulizar 2026-11-06 20:15 - Nebulizar Ventilar Calefaccionar - Nebulizar Ventilar Calefaccionar -->
+<!-- V405 PREMIUM ARRIBA STICKY + MENSUAL+ANUAL humedad 1 linea titulo Ventilar Nebulizar 2026-11-06 20:15 - Nebulizar Ventilar Calefaccionar - Nebulizar Ventilar Calefaccionar -->
 <html lang="en">
 <head>
  <meta charset="UTF-8">
@@ -75,10 +75,17 @@ try {
 </div>
 </div>
 <script>
-function togglePlanes(e){ if(e) e.stopPropagation(); var d=document.getElementById('planes-dropdown'); if(!d) return; var abierto = d.style.display==='block'; d.style.display = abierto ? 'none' : 'block'; }
-document.addEventListener('click', function(e){ var d=document.getElementById('planes-dropdown'); var bar=document.getElementById('premium-sticky-bar'); if(d && d.style.display==='block' && bar && !bar.contains(e.target)){ d.style.display='none'; } });
+function syncPremiumOffset(){ var bar=document.getElementById('premium-sticky-bar'); if(!bar) return; var h=bar.offsetHeight||52; document.documentElement.style.setProperty('--premium-h', h+'px'); }
+function togglePlanes(e){ if(e) e.stopPropagation(); var d=document.getElementById('planes-dropdown'); if(!d) return; var abierto = d.style.display==='block'; d.style.display = abierto ? 'none' : 'block'; setTimeout(syncPremiumOffset, 30); }
+window.addEventListener('resize', syncPremiumOffset);
+window.addEventListener('load', syncPremiumOffset);
+setTimeout(syncPremiumOffset, 100); setTimeout(syncPremiumOffset, 500);
+document.addEventListener('click', function(e){ var d=document.getElementById('planes-dropdown'); var bar=document.getElementById('premium-sticky-bar'); if(d && d.style.display==='block' && bar && !bar.contains(e.target)){ d.style.display='none'; setTimeout(syncPremiumOffset, 30); } });
 </script>
-<style>body{padding-top:0 !important;} #root{padding-top:8px !important;} #premium-sticky-bar{width:100%; box-sizing:border-box;}</style>
+<style>body{padding-top:0 !important;} #root{padding-top:8px !important;} #premium-sticky-bar{width:100%; box-sizing:border-box;}
+/* FIX DOBLE STICKY: el header de la app tambien es sticky top-0, por eso se metia debajo de la barra Premium. Ahora se pega DEBAJO de ella */
+#root header.sticky{top:var(--premium-h,52px) !important; z-index:30 !important;}
+</style>
 
 <script>
 var MP_MENSUAL='https://mpago.la/2sqs9Mz';
