@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- V402 PREMIUM ARRIBA STICKY + MENSUAL+ANUAL humedad 1 linea titulo Ventilar Nebulizar 2026-11-06 20:15 - Nebulizar Ventilar Calefaccionar - Nebulizar Ventilar Calefaccionar -->
+<!-- V403 PREMIUM ARRIBA STICKY + MENSUAL+ANUAL humedad 1 linea titulo Ventilar Nebulizar 2026-11-06 20:15 - Nebulizar Ventilar Calefaccionar - Nebulizar Ventilar Calefaccionar -->
 <html lang="en">
 <head>
  <meta charset="UTF-8">
@@ -62,38 +62,24 @@ try {
 </head>
 <body>
 <div id="premium-sticky-bar" style="position:fixed; top:0; left:0; right:0; z-index:10001; background:#2E7D32; color:white; padding:10px 12px; text-align:center; font-family:Arial; font-weight:800; font-size:14px; box-shadow:0 2px 10px rgba(0,0,0,0.25);">
-<div style="display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;">
+<div id="sticky-main-row" style="display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;">
 <span>🌟 Hazte Premium</span>
 <button onclick="togglePlanes(event)" style="background:#FFC107; color:#1B5E20; border:none; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:800; cursor:pointer;">Ver planes 👇</button>
 </div>
+<div id="premium-activo-sticky" style="display:none; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;"><span>✅ PREMIUM ACTIVO - Sin anuncios + Pronóstico del Clima y Recomendaciones 7 días</span></div>
 <div id="planes-dropdown" style="display:none; margin-top:10px; background:white; border-radius:12px; padding:12px; max-width:520px; margin-left:auto; margin-right:auto; box-shadow:0 4px 16px rgba(0,0,0,0.25);">
 <div style="color:#333; font-size:13px; margin-bottom:10px;">Sin anuncios + Pronóstico del Clima y Recomendaciones 7 días</div>
 <button onclick="irPremium('mensual')" style="background:#2E7D32; color:white; border:none; padding:12px; border-radius:8px; font-size:14px; font-weight:800; cursor:pointer; width:100%; margin-bottom:8px;">Premium Mensual - $3.000 / mes</button>
 <button onclick="irPremium('anual')" style="background:#F57F17; color:white; border:none; padding:12px; border-radius:8px; font-size:14px; font-weight:800; cursor:pointer; width:100%;">Premium Anual - $30.000 / año ⭐ Ahorras $6.000</button>
-<div style="color:#777; font-size:11px; margin-top:8px; font-weight:400;">Pago seguro con MercadoPago</div>
+<div style="color:#777; font-size:11px; margin-top:8px; font-weight:400;">Pago seguro con MercadoPago<br><a href="#" onclick="revisarPremium();return false;" style="color:#2E7D32;">Si ya pagaste y no se activó, pulsa aquí para revisar</a></div>
 </div>
 </div>
 <script>
 function togglePlanes(e){ if(e) e.stopPropagation(); var d=document.getElementById('planes-dropdown'); if(!d) return; var abierto = d.style.display==='block'; d.style.display = abierto ? 'none' : 'block'; }
 document.addEventListener('click', function(e){ var d=document.getElementById('planes-dropdown'); var bar=document.getElementById('premium-sticky-bar'); if(d && d.style.display==='block' && bar && !bar.contains(e.target)){ d.style.display='none'; } });
 </script>
-<style>body{padding-top:42px !important;} #premium-section{margin-top:12px !important;}</style>
+<style>body{padding-top:42px !important;}</style>
 
-<div id="premium-section" style="padding:15px; margin:20px; background:#FFF9C4; border:2px solid #FBC02D; border-radius:10px; text-align:center;">
- <h3 style="margin:0 0 10px 0; color:#F57F17;">🌟 Versión Premium</h3>
- <p style="margin:0 0 10px 0; font-size:14px;">Sin anuncios + Pronóstico del Clima y Recomendaciones 7 días</p>
- <div id="premium-buttons">
- <button onclick="irPremium('mensual')" style="background:#2E7D32; color:white; border:none; padding:14px 20px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer; width:100%; margin-bottom:10px;">
-  Premium Mensual - $3.000 / mes
- </button>
- <button onclick="irPremium('anual')" style="background:#F57F17; color:white; border:none; padding:14px 20px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer; width:100%;">
-  Premium Anual - $30.000 / año ⭐ Ahorras $6.000
- </button>
- <p style="font-size:12px; margin:10px 0 0 0; color:#555;">Pago seguro con MercadoPago • Se renueva solo hasta que canceles</p>
- </div>
- <div id="premium-activo-msg" style="display:none; background:#E8F5E9; border:2px solid #2E7D32; border-radius:8px; padding:12px; font-weight:800; color:#2E7D32;">✅ PREMIUM ACTIVO - Sin anuncios + 7 días</div>
- <p style="font-size:11px; margin-top:8px; color:#666;">Si ya pagaste y no se activó, pulsa <a href="#" onclick="revisarPremium();return false;">aquí para revisar</a></p>
-</div>
 <script>
 var MP_MENSUAL='https://mpago.la/2sqs9Mz';
 var MP_ANUAL='https://mpago.la/2FdvCuv';
@@ -106,19 +92,19 @@ function esPremiumActivo(){
   try{ return localStorage.getItem('premium_activo')==='true'; }catch(e){ return false; }
 }
 function mostrarEstadoPremium(){
-  var sec=document.getElementById('premium-section');
-  if(!sec) return;
-  var btns=document.getElementById('premium-buttons');
-  var msg=document.getElementById('premium-activo-msg');
-  if(esPremiumActivo()){
-    if(btns) btns.style.display='none';
-    if(msg) msg.style.display='block';
-    var bar=document.getElementById('premium-sticky-bar'); if(bar) bar.style.display='none';
-    document.body.style.paddingTop='0px';
+  if(!esPremiumActivo()) return;
+  var bar=document.getElementById('premium-sticky-bar');
+  if(bar){
+    var mainRow=document.getElementById('sticky-main-row');
+    var drop=document.getElementById('planes-dropdown');
+    var activo=document.getElementById('premium-activo-sticky');
+    if(mainRow) mainRow.style.display='none';
+    if(drop) drop.style.display='none';
+    if(activo) activo.style.display='flex';
   }
 }
 function revisarPremium(){
-  if(esPremiumActivo()){ alert('Premium activo ✅ Sin anuncios + 7 días'); }
+  if(esPremiumActivo()){ alert('Premium activo ✅ Sin anuncios + Pronóstico del Clima y Recomendaciones 7 días'); }
   else { alert('Aún no está activo. Si ya pagaste en MercadoPago, espera unos segundos y recarga la página.'); }
 }
 (function(){
