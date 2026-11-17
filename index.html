@@ -43,21 +43,7 @@ try {
 </script>
 
 
- <!-- Google AdSense / AdMob Web - V347 REAL -->
- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7242606975597849"
-  crossorigin="anonymous"></script>
- <script>
- // Inicializar AdSense
- try{ (adsbygoogle = window.adsbygoogle || []).push({}); }catch(e){}
- // Para debug V347
- window.ADMOB_IDS = {
-  publisher: "ca-app-pub-7242606975597849",
-  appId: "ca-app-pub-7242606975597849~9798114257",
-  banner: "ca-app-pub-7242606975597849/3034315227",
-  interstitial: "ca-app-pub-7242606975597849/4310254329"
- };
- console.log("V356 FIX PREMIUM + ELIMINA REDUNDANTE TOLERANCIA cargados:", window.ADMOB_IDS);
- </script>
+
 
 </head>
 <body>
@@ -71,7 +57,7 @@ try {
 <div style="color:#333; font-size:13px; margin-bottom:10px;">Sin anuncios + Pronóstico del Clima y Recomendaciones 7 días</div>
 <button onclick="irPremium('mensual')" style="background:#2E7D32; color:white; border:none; padding:12px; border-radius:8px; font-size:14px; font-weight:800; cursor:pointer; width:100%; margin-bottom:8px;">Premium Mensual - $3.000 / mes</button>
 <button onclick="irPremium('anual')" style="background:#F57F17; color:white; border:none; padding:12px; border-radius:8px; font-size:14px; font-weight:800; cursor:pointer; width:100%;">Premium Anual - $30.000 / año ⭐ Ahorras $6.000</button>
-<div style="color:#777; font-size:11px; margin-top:8px; font-weight:400;">Pago seguro con MercadoPago<br><a href="#" onclick="revisarPremium();return false;" style="color:#2E7D32;">Si ya pagaste y no se activó, pulsa aquí para revisar</a></div>
+<div style="color:#777; font-size:11px; margin-top:8px; font-weight:400;">Compra segura con Google Play<br><a href="#" onclick="revisarPremium();return false;" style="color:#2E7D32;">Si ya pagaste y no se activó, pulsa aquí para revisar</a></div>
 </div>
 </div>
 <script>
@@ -88,8 +74,7 @@ document.addEventListener('click', function(e){ var d=document.getElementById('p
 </style>
 
 <script>
-var MP_MENSUAL='https://mpago.la/2sqs9Mz';
-var MP_ANUAL='https://mpago.la/2FdvCuv';
+
 function irPremium(tipo){
   var url = tipo==='anual' ? MP_ANUAL : MP_MENSUAL;
   window.location.href = url;
@@ -112,7 +97,7 @@ function mostrarEstadoPremium(){
 }
 function revisarPremium(){
   if(esPremiumActivo()){ alert('Premium activo ✅ Sin anuncios + Pronóstico del Clima y Recomendaciones 7 días'); }
-  else { alert('Aún no está activo. Si ya pagaste en MercadoPago, espera unos segundos y recarga la página.'); }
+  else { alert('Aún no está activo. Si ya pagaste en Google Play, espera unos segundos y recarga la página.'); }
 }
 (function(){
   try{
@@ -126,7 +111,7 @@ function revisarPremium(){
       window.history.replaceState({},'',clean);
       setTimeout(function(){ alert('¡Gracias! Premium activado ✅\nSin anuncios + Pronóstico del Clima y Recomendaciones 7 días'); }, 300);
     }
-    if(pago==='pendiente'){ alert('Tu pago quedó pendiente en MercadoPago. Cuando se apruebe, vuelve a entrar y se activará.'); }
+    if(pago==='pendiente'){ alert('Tu pago quedó pendiente en Google Play. Cuando se apruebe, vuelve a entrar y se activará.'); }
     if(pago==='fallo'){ alert('El pago no se completó. Puedes intentar de nuevo con el botón Premium.'); }
   }catch(e){}
   mostrarEstadoPremium();
@@ -799,14 +784,14 @@ setInterval(()=>{
  <script>
 // PASO 1 B-LIGERA - 17-11-2026 - Manejo Clima Ponedora
 // Archivo: paso1-puente.js
-// Qué hace: anula AdSense/AdMob web y MercadoPago, y deja el puente a la app nativa.
+// Qué hace: anula AdSense/AdMob web y pago externo, y deja el puente a la app nativa.
 // Cómo usarlo:
 // 1) Sube este archivo a GitHub, al mismo repo manejo-clima-ponedora-legal, al lado de index.html
 // 2) En index.html, justo antes de </body>, agrega esta línea:
 //    <script src="paso1-puente.js"></script>
 // 3) En index.html, borra el bloque de AdSense del <head> (el script de pagead2.googlesyndication.com + el script con window.ADMOB_IDS)
 // 4) En index.html, borra las 2 líneas var MP_MENSUAL y var MP_ANUAL
-// 5) En index.html, cambia el texto "Pago seguro con MercadoPago" por "Compra segura con Google Play"
+// 5) En index.html, cambia el texto "Compra segura con Google Play" por "Compra segura con Google Play"
 // Si haces solo 1) y 2), el puente ya funciona aunque no borres 3) y 4), porque este archivo los anula. Pero 3) es obligatorio para que no quede AdSense dentro de la app.
 (function(){
   // 1) Anular AdSense web: no cargar más anuncios web con IDs de AdMob
@@ -817,7 +802,7 @@ setInterval(()=>{
   }catch(e){}
 
   // 2) Estado Premium: solo lo decide la app nativa (Play Billing) o lo que ya estaba guardado.
-  // NO activar Premium por ?pago=exitoso (ese era el retorno de MercadoPago y ya no existe).
+  // NO activar Premium por ?pago=exitoso (ese era el retorno de pago externo y ya no existe).
   // Si la URL trae ?pago=..., la limpiamos sin activar nada.
   try{
     var params = new URLSearchParams(window.location.search);
@@ -860,7 +845,7 @@ setInterval(()=>{
     }catch(e){}
   };
 
-  // 4) Botones Premium -> Google Play (NO MercadoPago). Anula irPremium / activarPremium viejos.
+  // 4) Botones Premium -> Google Play (NO pago externo). Anula irPremium / activarPremium viejos.
   window.irPremium = function(tipo){
     var productId = tipo === 'anual' ? 'premium_anual_30000' : 'premium_mensual_2990';
     window.MCP_buyPremium(productId);
