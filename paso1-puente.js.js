@@ -1,13 +1,13 @@
 // PASO 1 B-LIGERA - 17-11-2026 - Manejo Clima Ponedora
 // Archivo: paso1-puente.js
-// Qué hace: anula AdSense/AdMob web y MercadoPago, y deja el puente a la app nativa.
+// Qué hace: anula AdSense/AdMob web y pago externo, y deja el puente a la app nativa.
 // Cómo usarlo:
 // 1) Sube este archivo a GitHub, al mismo repo manejo-clima-ponedora-legal, al lado de index.html
 // 2) En index.html, justo antes de </body>, agrega esta línea:
 //    <script src="paso1-puente.js"></script>
 // 3) En index.html, borra el bloque de AdSense del <head> (el script de pagead2.googlesyndication.com + el script con window.ADMOB_IDS)
 // 4) En index.html, borra las 2 líneas var MP_MENSUAL y var MP_ANUAL
-// 5) En index.html, cambia el texto "Pago seguro con MercadoPago" por "Compra segura con Google Play"
+// 5) En index.html, cambia el texto "Compra segura con Google Play" por "Compra segura con Google Play"
 // Si haces solo 1) y 2), el puente ya funciona aunque no borres 3) y 4), porque este archivo los anula. Pero 3) es obligatorio para que no quede AdSense dentro de la app.
 (function(){
   // 1) Anular AdSense web: no cargar más anuncios web con IDs de AdMob
@@ -18,7 +18,7 @@
   }catch(e){}
 
   // 2) Estado Premium: solo lo decide la app nativa (Play Billing) o lo que ya estaba guardado.
-  // NO activar Premium por ?pago=exitoso (ese era el retorno de MercadoPago y ya no existe).
+  // NO activar Premium por ?pago=exitoso (ese era el retorno de pago externo y ya no existe).
   // Si la URL trae ?pago=..., la limpiamos sin activar nada.
   try{
     var params = new URLSearchParams(window.location.search);
@@ -61,7 +61,7 @@
     }catch(e){}
   };
 
-  // 4) Botones Premium -> Google Play (NO MercadoPago). Anula irPremium / activarPremium viejos.
+  // 4) Botones Premium -> Google Play (NO pago externo). Anula irPremium / activarPremium viejos.
   window.irPremium = function(tipo){
     var productId = tipo === 'anual' ? 'premium_anual_30000' : 'premium_mensual_2990';
     window.MCP_buyPremium(productId);
