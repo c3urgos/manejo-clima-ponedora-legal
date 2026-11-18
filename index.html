@@ -834,16 +834,20 @@ setInterval(()=>{
     try{ if(typeof mostrarEstadoPremium === 'function') mostrarEstadoPremium(); }catch(e){}
     try{ window.MCP_applyPremiumUI(); }catch(e){}
   };
-  window.MCP_applyPremiumUI = function(){
-    try{
-      var banner = document.getElementById('caja-banner') || document.getElementById('admob-banner-container');
-      if(banner){
-        // Caja 1: en la app nativa el banner real lo pone el SDK de AdMob debajo del WebView.
-        // En web, la caja queda vacía / oculta para no mostrar un anuncio falso.
-        banner.style.display = 'none';
-      }
-    }catch(e){}
-  };
+ window.MCP_applyPremiumUI = function(){
+  try{
+    var isNative = !!(window.AndroidAds || window.AndroidBilling || window.Android);
+    var isPremium = false;
+    try{ isPremium = localStorage.getItem('premium_activo') === 'true' || localStorage.getItem('pp_premium') === 'true'; }catch(e){}
+    var ids = ['banner-inferior-real','caja-banner','admob-banner-container'];
+    for(var i = 0; i < ids.length; i++){
+      var el = document.getElementById(ids[i]);
+      if(!el) continue;
+      if(isNative || isPremium){ el.style.display = 'none'; }
+      else { el.style.display = ''; }
+    }
+  }catch(e){}
+};
 
   // 4) Botones Premium -> Google Play (NO pago externo). Anula irPremium / activarPremium viejos.
   window.irPremium = function(tipo){
