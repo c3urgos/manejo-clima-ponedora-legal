@@ -109,3 +109,55 @@
   setTimeout(window.MCP_applyPremiumUI, 1000);
   setTimeout(window.MCP_applyPremiumUI, 3000);
 })();
+// === INTERSTICIAL NATIVO + PREMIUM - 19-11-2026 ===
+// Android ya tiene el intersticial con clave .../4310254329
+// y el freno de 60 segundos. Aqui solo le pedimos que lo muestre.
+
+window.esPremiumNativo = window.esPremiumNativo || false;
+
+// Android llama a esto en cada onPageFinished
+window.__setPremiumNativo = function(esPremium) {
+  window.esPremiumNativo = !!esPremium;
+  // Si tu codigo ya tiene otra funcion para Premium, esta linea no la rompe:
+  if (typeof window.__onPremiumNativo === 'function') {
+    try { window.__onPremiumNativo(!!esPremium); } catch (e) {}
+  }
+};
+
+window.mostrarIntersticialNativo = function() {
+  try {
+    // 1. Si ya sabemos que es Premium, NO mostrar nada
+    if (window.esPremiumNativo) return;
+    // 2. Si estamos dentro de la app Android, preguntar de nuevo por si acaso
+    if (window.AndroidBridge) {
+      try {
+        if (window.AndroidBridge.esPremium && window.AndroidBridge.esPremium()) {
+          window.esPremiumNativo = true;
+          return;
+        }
+      } catch (e) {}
+      // 3. Pedir el intersticial a Android
+      if (window.AndroidBridge.mostrarIntersticial) {
+        window.AndroidBridge.mostrarIntersticial();
+      }
+    }
+  } catch (e) {}
+};
+
+// Enganchar los 2 botones por el texto que muestran,
+// asi no importa como se llamen sus IDs en index.html
+document.addEventListener('click', function(e) {
+  var btn = e.target && e.target.closest ? e.target.closest('button, a, [role="button"]') : null;
+  if (!btn) return;
+  var texto = (btn.textContent || '').toLowerCase();
+  // Elige Raza / Elegir Raza
+  if (texto.indexOf('raza') !== -1) {
+    window.mostrarIntersticialNativo();
+    return;
+  }
+  // Actualizar Clima / Actualizar
+  if (texto.indexOf('actualizar') !== -1 && texto.indexOf('clima') !== -1) {
+    window.mostrarIntersticialNativo();
+    return;
+  }
+}, true);
